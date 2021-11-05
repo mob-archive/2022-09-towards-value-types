@@ -4,15 +4,21 @@ pub struct Board {
 
 impl Board {
     pub fn new() -> Self {
-        return Self { value: false };
+        Self { value: false }
     }
 
     pub fn has_value(&self, _coordinate: Coordinate) -> bool {
-        return self.value;
+        self.value
     }
 
     pub fn set_value(&mut self, _coordinate: Coordinate, _value: u8) {
         self.value = true;
+    }
+}
+
+impl Default for Board {
+    fn default() -> Self {
+        Board::new()
     }
 }
 
@@ -29,7 +35,7 @@ mod tests {
 
     #[test]
     fn it_initializes_an_empty_baord() {
-        let b = Board::new();
+        let b = Board::default();
         assert_eq!(b.has_value(Coordinate { row: 0, column: 0 }), false);
     }
 
