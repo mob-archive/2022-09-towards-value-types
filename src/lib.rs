@@ -1,3 +1,5 @@
+mod coordinate;
+use crate::coordinate::Coordinate;
 use std::collections::HashMap;
 
 pub struct Board {
@@ -28,12 +30,6 @@ impl Default for Board {
     fn default() -> Self {
         Board::new()
     }
-}
-
-#[derive(Hash, Eq, PartialEq)]
-pub struct Coordinate {
-    pub row: u8,
-    pub column: u8,
 }
 
 #[cfg(test)]
