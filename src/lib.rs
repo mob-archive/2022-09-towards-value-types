@@ -1,39 +1,36 @@
 pub struct Board {
-    value:bool
+    value: bool,
 }
 
 impl Board {
-
     pub fn new() -> Self {
-        return Self {
-            value:false
-        };
+        return Self { value: false };
     }
 
-    pub fn has_value(&self, _row: u8, _column: u8) -> bool {
+    pub fn has_value(&self, _coordinate: Coordinate) -> bool {
         return self.value;
     }
 
-    pub fn set_value(&mut self, _row: u8, _column: u8, _value: u8) {
+    pub fn set_value(&mut self, _coordinate: Coordinate, _value: u8) {
         self.value = true;
     }
+}
+
+pub struct Coordinate {
+    pub row: u8,
+    pub column: u8,
 }
 
 #[cfg(test)]
 mod tests {
 
     use crate::Board;
-
-    #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
-    }
+    use crate::Coordinate;
 
     #[test]
     fn it_initializes_an_empty_baord() {
         let b = Board::new();
-        assert_eq!(b.has_value(0, 0), false);
+        assert_eq!(b.has_value(Coordinate { row: 0, column: 0 }), false);
     }
 
     #[test]
@@ -42,11 +39,9 @@ mod tests {
         let mut b = Board::new();
 
         // Act
-        b.set_value(0,0,2);
+        b.set_value(Coordinate { row: 0, column: 0 }, 2);
 
         // Assert
-        assert_eq!(b.has_value(0, 0), true);
-
+        assert_eq!(b.has_value(Coordinate { row: 0, column: 0 }), true);
     }
-
 }
