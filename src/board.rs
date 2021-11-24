@@ -2,6 +2,8 @@ use crate::board_value::BoardValue;
 use crate::coordinate::Coordinate;
 use std::collections::HashMap;
 
+pub type FieldRepresentation = [[BoardValue; 4]; 4];
+
 #[derive(Debug, Eq, PartialEq)]
 pub struct Board {
     cells: HashMap<Coordinate, BoardValue>,
@@ -25,6 +27,22 @@ impl Board {
     pub fn get_value(&self, coordinate: Coordinate) -> BoardValue {
         *self.cells.get(&coordinate).unwrap()
     }
+
+    pub fn get_representation(&self) -> FieldRepresentation {
+        const V: BoardValue = BoardValue::new(0);
+        let mut result: FieldRepresentation =
+            [[V, V, V, V], [V, V, V, V], [V, V, V, V], [V, V, V, V]];
+
+        for row in 0..3 {
+            for column in 0..3 {
+                let coordinate = Coordinate { row, column };
+                if self.has_value(coordinate) {
+                    result[row as usize][column as usize] = self.get_value(coordinate);
+                }
+            }
+        }
+        result
+    }
 }
 
 impl Default for Board {
@@ -39,6 +57,7 @@ mod tests {
     use crate::board::Board;
     use crate::board::BoardValue;
     use crate::board::Coordinate;
+    use crate::board::FieldRepresentation;
 
     const FIRST_COORDINATE: Coordinate = Coordinate { row: 0, column: 0 };
     const SECOND_COORDINATE: Coordinate = Coordinate { row: 1, column: 0 };
@@ -105,5 +124,42 @@ mod tests {
 
         // Act/Assert should panic
         b.get_value(SECOND_COORDINATE);
+    }
+
+    #[test]
+    fn it_should_convert_to_external_representation() {
+        let b = create_board_with_first_coordinate(VALUE_4);
+
+        let field = b.get_representation();
+
+        const V: BoardValue = BoardValue::new(0);
+        let expected_field: FieldRepresentation =
+            [[VALUE_4, V, V, V], [V, V, V, V], [V, V, V, V], [V, V, V, V]];
+        assert_eq!(expected_field, field);
+    }
+
+    #[test]
+    fn it_should_convert_to_external_representation_with_value_two() {
+        let b = create_board_with_first_coordinate(BoardValue::new(2));
+
+        let field = b.get_representation();
+
+        const V: BoardValue = BoardValue::new(0);
+        let expected_field: FieldRepresentation =
+            [[BoardValue::new(2), V, V, V], [V, V, V, V], [V, V, V, V], [V, V, V, V]];
+        assert_eq!(expected_field, field);
+    }
+
+    #[test]
+    fn it_should_convert_to_representation_second_coordinate() {
+        let mut b = Board::default();
+        b.set_value(SECOND_COORDINATE, VALUE_4);
+
+        let field = b.get_representation();
+
+        const V: BoardValue = BoardValue::new(0);
+        let expected_field: FieldRepresentation =
+            [[V, V, V, V], [VALUE_4, V, V, V], [V, V, V, V], [V, V, V, V]];
+        assert_eq!(expected_field, field);
     }
 }
