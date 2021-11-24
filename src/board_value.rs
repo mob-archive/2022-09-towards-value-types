@@ -1,10 +1,10 @@
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub struct BoardValue {
-    value: u8,
+    value: u32,
 }
 
 impl BoardValue {
-    pub const fn new(value: u8) -> BoardValue {
+    pub const fn new(value: u32) -> BoardValue {
         Self { value }
     }
 }
