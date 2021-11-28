@@ -1,12 +1,21 @@
+use crate::game_actions::move_down;
+use crate::board::Board;
+use crate::board_value::BoardValue;
+use crate::coordinate::Coordinate;
+
 pub struct Game {
-    is_moved: bool,
+    board: Board,
 }
 
 type ExternalFieldRepresentation = [[u32; 4]; 4];
 
 impl Game {
     pub fn new() -> Self {
-        Self { is_moved: false }
+        let mut board = Board::default();
+        board.set_value(Coordinate { row: 2, column: 0 }, BoardValue::new(2));
+        Self {
+            board,
+        }
     }
 
     pub fn get_score(&self) -> u128 {
@@ -14,15 +23,20 @@ impl Game {
     }
 
     pub fn get_field(&self) -> ExternalFieldRepresentation {
-        if self.is_moved {
-            [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [2, 0, 0, 0]]
-        } else {
-            [[0, 0, 0, 0], [0, 0, 0, 0], [2, 0, 0, 0], [0, 0, 0, 0]]
+        let field = self.board.get_representation();
+        let mut result = [[0u32; 4]; 4];
+
+        for row in 0..4 {
+            for column in 0..4 {
+                result[row as usize][column as usize] =
+                    field[row as usize][column as usize].get_value();
+            }
         }
+        result
     }
 
     pub fn move_down(&mut self) {
-        self.is_moved = true
+        move_down(&mut self.board);
     }
 }
 
@@ -59,7 +73,7 @@ mod tests {
         let expected: ExternalFieldRepresentation;
         expected = [[0, 0, 0, 0], [0, 0, 0, 0], [2, 0, 0, 0], [0, 0, 0, 0]];
 
-        assert_eq!(field, expected);
+        assert_eq!(expected, field);
     }
 
     #[test]
@@ -72,6 +86,6 @@ mod tests {
         let expected: ExternalFieldRepresentation;
         expected = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [2, 0, 0, 0]];
 
-        assert_eq!(field, expected);
+        assert_eq!(expected, field);
     }
 }

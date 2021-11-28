@@ -7,6 +7,10 @@ impl BoardValue {
     pub const fn new(value: u32) -> BoardValue {
         Self { value }
     }
+
+    pub fn get_value(self) -> u32{
+        self.value
+    }
 }
 
 impl Default for BoardValue {
