@@ -34,7 +34,7 @@ mod tests {
 
     #[test]
     fn it_should_init_default() {
-        assert_eq!(BoardValue::default(), BoardValue { value: 2 });
+        assert_eq!(BoardValue::default(),BoardValue { value: 2 });
     }
 
     #[test]

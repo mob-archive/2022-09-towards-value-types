@@ -76,7 +76,7 @@ mod tests {
         let expected: ExternalFieldRepresentation;
         expected = [[0, 0, 0, 0], [0, 0, 0, 0], [2, 0, 0, 0], [0, 0, 0, 0]];
 
-        assert_eq!(expected, field);
+        assert_eq!(field, expected);
     }
 
     #[test]
@@ -89,6 +89,6 @@ mod tests {
         let expected: ExternalFieldRepresentation;
         expected = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [2, 0, 0, 0]];
 
-        assert_eq!(expected, field);
+        assert_eq!(field, expected);
     }
 }

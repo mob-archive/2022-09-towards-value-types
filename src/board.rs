@@ -147,7 +147,7 @@ mod tests {
         const V: BoardValue = BoardValue::new(0);
         let expected_field: FieldRepresentation =
             [[VALUE_4, V, V, V], [V, V, V, V], [V, V, V, V], [V, V, V, V]];
-        assert_eq!(expected_field, field);
+        assert_eq!(field, expected_field);
     }
 
     #[test]
@@ -163,7 +163,7 @@ mod tests {
             [V, V, V, V],
             [V, V, V, V],
         ];
-        assert_eq!(expected_field, field);
+        assert_eq!(field, expected_field);
     }
 
     #[test]
@@ -176,7 +176,7 @@ mod tests {
         const V: BoardValue = BoardValue::new(0);
         let expected_field: FieldRepresentation =
             [[V, V, V, V], [VALUE_4, V, V, V], [V, V, V, V], [V, V, V, V]];
-        assert_eq!(expected_field, field);
+        assert_eq!(field, expected_field);
     }
 
     #[test]
@@ -194,7 +194,7 @@ mod tests {
             [V, V, V, V],
             [V, V, V, V],
         ];
-        assert_eq!(expected_field, field);
+        assert_eq!(field, expected_field);
     }
 
     #[test]
@@ -212,7 +212,7 @@ mod tests {
             [V, V, V, V],
             [V, V, V, V],
         ];
-        assert_eq!(expected_field, field);
+        assert_eq!(field, expected_field);
     }
 
     #[test]
@@ -230,7 +230,7 @@ mod tests {
             [V, V, V, V],
             [VALUE_2, V, V, VALUE_4],
         ];
-        assert_eq!(expected_field, field);
+        assert_eq!(field, expected_field);
     }
 
     #[test]
@@ -239,6 +239,6 @@ mod tests {
 
         b.delete_value(FIRST_COORDINATE);
 
-        assert_eq!(b.has_value(FIRST_COORDINATE),false);
+        assert_eq!(b.has_value(FIRST_COORDINATE), false);
     }
 }
