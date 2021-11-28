@@ -1,4 +1,6 @@
-#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+use std::fmt;
+
+#[derive(Clone, Copy, Eq, PartialEq)]
 pub struct BoardValue {
     value: u32,
 }
@@ -16,6 +18,12 @@ impl BoardValue {
 impl Default for BoardValue {
     fn default() -> Self {
         BoardValue::new(2)
+    }
+}
+
+impl fmt::Debug for BoardValue {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.value)
     }
 }
 
