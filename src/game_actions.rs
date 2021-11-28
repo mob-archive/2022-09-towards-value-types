@@ -4,6 +4,7 @@ use crate::coordinate::Coordinate;
 
 pub fn move_down(board: &mut Board) {
     if board.has_value(Coordinate { row: 2, column: 0 }) {
+        board.delete_value(Coordinate { row: 2, column: 0 });
         board.set_value(Coordinate { row: 3, column: 0 }, BoardValue::default());
     }
 }
@@ -32,9 +33,12 @@ mod tests {
 
         move_down(&mut board);
 
+        const V: BoardValue = BoardValue::new(0);
+        const VALUE_2: BoardValue = BoardValue::new(2);
+
         assert_eq!(
-            board.get_value(Coordinate { row: 3, column: 0 }),
-            BoardValue::default()
-        );
+            board.get_representation(),
+            [[V, V, V, V], [V, V, V, V], [V, V, V, V], [VALUE_2, V, V, V]]
+        )
     }
 }
