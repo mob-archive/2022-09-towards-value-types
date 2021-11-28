@@ -1,21 +1,36 @@
 use crate::board::Board;
-use crate::board_value::BoardValue;
 use crate::coordinate::Coordinate;
 
 pub fn move_down(board: &mut Board) {
-    if board.has_value(Coordinate { row: 2, column: 0 }) {
-        board.delete_value(Coordinate { row: 2, column: 0 });
-        board.set_value(Coordinate { row: 3, column: 0 }, BoardValue::default());
+    move_cell_value(
+        board,
+        Coordinate { row: 2, column: 0 },
+        Coordinate { row: 3, column: 0 },
+    );
+    move_cell_value(
+        board,
+        Coordinate { row: 2, column: 1 },
+        Coordinate { row: 3, column: 1 },
+    );
+}
+fn move_cell_value(board: &mut Board, from: Coordinate, to: Coordinate) {
+    if board.has_value(from) {
+        let previous_value = board.get_value(from);
+        board.delete_value(from);
+        board.set_value(to, previous_value);
     }
 }
 
 #[cfg(test)]
 mod tests {
 
+    use crate::board_value::BoardValue;
     use crate::game_actions::move_down;
     use crate::game_actions::Board;
-    use crate::game_actions::BoardValue;
-    use crate::game_actions::Coordinate;
+
+    const V0: BoardValue = BoardValue::new(0);
+    const V2: BoardValue = BoardValue::new(2);
+    const V4: BoardValue = BoardValue::new(4);
 
     #[test]
     fn it_should_do_nothing_on_empty_board() {
@@ -28,17 +43,67 @@ mod tests {
 
     #[test]
     fn it_should_move_one_value_down() {
-        let mut board = Board::default();
-        board.set_value(Coordinate { row: 2, column: 0 }, BoardValue::default());
+        let mut board = Board::from_field([
+            [V0, V0, V0, V0],
+            [V0, V0, V0, V0],
+            [V2, V0, V0, V0],
+            [V0, V0, V0, V0],
+        ]);
 
         move_down(&mut board);
 
-        const V: BoardValue = BoardValue::new(0);
-        const VALUE_2: BoardValue = BoardValue::new(2);
+        assert_eq!(
+            board,
+            Board::from_field([
+                [V0, V0, V0, V0],
+                [V0, V0, V0, V0],
+                [V0, V0, V0, V0],
+                [V2, V0, V0, V0]
+            ])
+        );
+    }
+
+    #[test]
+    fn it_should_move_two_values_down() {
+        let mut board = Board::from_field([
+            [V0, V0, V0, V0],
+            [V0, V0, V0, V0],
+            [V2, V2, V0, V0],
+            [V0, V0, V0, V0],
+        ]);
+
+        move_down(&mut board);
 
         assert_eq!(
-            board.get_representation(),
-            [[V, V, V, V], [V, V, V, V], [V, V, V, V], [VALUE_2, V, V, V]]
-        )
+            board,
+            Board::from_field([
+                [V0, V0, V0, V0],
+                [V0, V0, V0, V0],
+                [V0, V0, V0, V0],
+                [V2, V2, V0, V0]
+            ])
+        );
+    }
+
+    #[test]
+    fn it_should_move_two_different_values_down() {
+        let mut board = Board::from_field([
+            [V0, V0, V0, V0],
+            [V0, V0, V0, V0],
+            [V2, V4, V0, V0],
+            [V0, V0, V0, V0],
+        ]);
+
+        move_down(&mut board);
+
+        assert_eq!(
+            board,
+            Board::from_field([
+                [V0, V0, V0, V0],
+                [V0, V0, V0, V0],
+                [V0, V0, V0, V0],
+                [V2, V4, V0, V0]
+            ])
+        );
     }
 }
