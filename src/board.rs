@@ -33,8 +33,8 @@ impl Board {
         let mut result: FieldRepresentation =
             [[V, V, V, V], [V, V, V, V], [V, V, V, V], [V, V, V, V]];
 
-        for row in 0..3 {
-            for column in 0..3 {
+        for row in 0..4 {
+            for column in 0..4 {
                 let coordinate = Coordinate { row, column };
                 if self.has_value(coordinate) {
                     result[row as usize][column as usize] = self.get_value(coordinate);
@@ -61,6 +61,7 @@ mod tests {
 
     const FIRST_COORDINATE: Coordinate = Coordinate { row: 0, column: 0 };
     const SECOND_COORDINATE: Coordinate = Coordinate { row: 1, column: 0 };
+    const VALUE_2: BoardValue = BoardValue::new(2);
     const VALUE_4: BoardValue = BoardValue::new(4);
 
     fn create_board_with_first_coordinate(value: BoardValue) -> Board {
@@ -79,6 +80,13 @@ mod tests {
     fn it_sets_a_value() {
         let b = create_board_with_first_coordinate(BoardValue::default());
         assert_eq!(b.has_value(FIRST_COORDINATE), true);
+
+        const V: BoardValue = BoardValue::new(0);
+        const VALUE_2: BoardValue = BoardValue::new(2);
+        assert_eq!(
+            b.get_representation(),
+            [[VALUE_2, V, V, V], [V, V, V, V], [V, V, V, V], [V, V, V, V]]
+        )
     }
 
     #[test]
@@ -145,8 +153,12 @@ mod tests {
         let field = b.get_representation();
 
         const V: BoardValue = BoardValue::new(0);
-        let expected_field: FieldRepresentation =
-            [[BoardValue::new(2), V, V, V], [V, V, V, V], [V, V, V, V], [V, V, V, V]];
+        let expected_field: FieldRepresentation = [
+            [BoardValue::new(2), V, V, V],
+            [V, V, V, V],
+            [V, V, V, V],
+            [V, V, V, V],
+        ];
         assert_eq!(expected_field, field);
     }
 
@@ -160,6 +172,60 @@ mod tests {
         const V: BoardValue = BoardValue::new(0);
         let expected_field: FieldRepresentation =
             [[V, V, V, V], [VALUE_4, V, V, V], [V, V, V, V], [V, V, V, V]];
+        assert_eq!(expected_field, field);
+    }
+
+    #[test]
+    fn it_should_convert_to_representation_with_two_identical_values() {
+        let mut b = Board::default();
+        b.set_value(FIRST_COORDINATE, VALUE_4);
+        b.set_value(SECOND_COORDINATE, VALUE_4);
+
+        let field = b.get_representation();
+
+        const V: BoardValue = BoardValue::new(0);
+        let expected_field: FieldRepresentation = [
+            [VALUE_4, V, V, V],
+            [VALUE_4, V, V, V],
+            [V, V, V, V],
+            [V, V, V, V],
+        ];
+        assert_eq!(expected_field, field);
+    }
+
+    #[test]
+    fn it_should_convert_to_representation_with_two_values() {
+        let mut b = Board::default();
+        b.set_value(FIRST_COORDINATE, VALUE_2);
+        b.set_value(SECOND_COORDINATE, VALUE_4);
+
+        let field = b.get_representation();
+
+        const V: BoardValue = BoardValue::new(0);
+        let expected_field: FieldRepresentation = [
+            [VALUE_2, V, V, V],
+            [VALUE_4, V, V, V],
+            [V, V, V, V],
+            [V, V, V, V],
+        ];
+        assert_eq!(expected_field, field);
+    }
+
+    #[test]
+    fn it_should_convert_to_representation_in_last_row() {
+        let mut b = Board::default();
+        b.set_value(Coordinate { column: 0, row: 3 }, VALUE_2);
+        b.set_value(Coordinate { column: 3, row: 3 }, VALUE_4);
+
+        let field = b.get_representation();
+
+        const V: BoardValue = BoardValue::new(0);
+        let expected_field: FieldRepresentation = [
+            [V, V, V, V],
+            [V, V, V, V],
+            [V, V, V, V],
+            [VALUE_2, V, V, VALUE_4],
+        ];
         assert_eq!(expected_field, field);
     }
 }
