@@ -28,6 +28,10 @@ impl Board {
         *self.cells.get(&coordinate).unwrap()
     }
 
+    pub fn delete_value(&mut self, coordinate: Coordinate) {
+        self.cells.remove(&coordinate);
+    }
+
     pub fn get_representation(&self) -> FieldRepresentation {
         const V: BoardValue = BoardValue::new(0);
         let mut result: FieldRepresentation =
@@ -227,5 +231,14 @@ mod tests {
             [VALUE_2, V, V, VALUE_4],
         ];
         assert_eq!(expected_field, field);
+    }
+
+    #[test]
+    fn it_should_delete_value() {
+        let mut b = create_board_with_first_coordinate(VALUE_4);
+
+        b.delete_value(FIRST_COORDINATE);
+
+        assert_eq!(b.has_value(FIRST_COORDINATE),false);
     }
 }
