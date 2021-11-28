@@ -7,13 +7,30 @@ pub type FieldRepresentation = [[BoardValue; 4]; 4];
 #[derive(Debug, Eq, PartialEq)]
 pub struct Board {
     cells: HashMap<Coordinate, BoardValue>,
+    size: u8,
 }
 
 impl Board {
     pub fn new() -> Self {
         Self {
             cells: HashMap::new(),
+            size: 4,
         }
+    }
+
+    pub fn from_field(field: FieldRepresentation) -> Self {
+        const VALUE_0: BoardValue = BoardValue::new(0);
+        let mut b = Board::default();
+        for row in 0..b.size {
+            for column in 0..b.size {
+                let value = field[row as usize][column as usize];
+                if value != VALUE_0 {
+                    let coordinate = Coordinate { row, column };
+                    b.set_value(coordinate, value);
+                }
+            }
+        }
+        b
     }
 
     pub fn has_value(&self, coordinate: Coordinate) -> bool {
@@ -37,8 +54,8 @@ impl Board {
         let mut result: FieldRepresentation =
             [[V, V, V, V], [V, V, V, V], [V, V, V, V], [V, V, V, V]];
 
-        for row in 0..4 {
-            for column in 0..4 {
+        for row in 0..self.size {
+            for column in 0..self.size {
                 let coordinate = Coordinate { row, column };
                 if self.has_value(coordinate) {
                     result[row as usize][column as usize] = self.get_value(coordinate);
@@ -65,6 +82,7 @@ mod tests {
 
     const FIRST_COORDINATE: Coordinate = Coordinate { row: 0, column: 0 };
     const SECOND_COORDINATE: Coordinate = Coordinate { row: 1, column: 0 };
+    const V: BoardValue = BoardValue::new(0);
     const VALUE_2: BoardValue = BoardValue::new(2);
     const VALUE_4: BoardValue = BoardValue::new(4);
 
@@ -223,7 +241,6 @@ mod tests {
 
         let field = b.get_representation();
 
-        const V: BoardValue = BoardValue::new(0);
         let expected_field: FieldRepresentation = [
             [V, V, V, V],
             [V, V, V, V],
@@ -240,5 +257,21 @@ mod tests {
         b.delete_value(FIRST_COORDINATE);
 
         assert_eq!(b.has_value(FIRST_COORDINATE), false);
+    }
+
+    #[test]
+    fn it_should_create_a_board_from_representation() {
+        let mut expected_board = Board::default();
+        expected_board.set_value(Coordinate { column: 0, row: 3 }, VALUE_2);
+        expected_board.set_value(Coordinate { column: 3, row: 3 }, VALUE_4);
+
+        let board = Board::from_field([
+            [V, V, V, V],
+            [V, V, V, V],
+            [V, V, V, V],
+            [VALUE_2, V, V, VALUE_4],
+        ]);
+
+        assert_eq!(board, expected_board);
     }
 }
