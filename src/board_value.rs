@@ -13,6 +13,10 @@ impl BoardValue {
     pub fn get_value(self) -> u32{
         self.value
     }
+
+    pub fn duplicate(self) -> BoardValue {
+        BoardValue::new(self.value * 2)
+    }
 }
 
 impl Default for BoardValue {
@@ -40,6 +44,13 @@ mod tests {
     #[test]
     fn it_should_create_given_value() {
         assert_eq!(BoardValue::new(4), BoardValue { value: 4 });
+    }
+
+    #[test]
+    fn it_should_duplicate_the_value() {
+        // Possibility for Rust QuickCheck: https://github.com/BurntSushi/quickcheck
+        assert_eq!(BoardValue::new(4).duplicate(), BoardValue { value: 8 });
+        assert_eq!(BoardValue::new(8).duplicate(), BoardValue { value: 16 });
     }
 
 }
