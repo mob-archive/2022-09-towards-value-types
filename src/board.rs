@@ -1,13 +1,20 @@
 use crate::board_value::BoardValue;
 use crate::coordinate::Coordinate;
+use std::fmt;
 use std::collections::HashMap;
 
 pub type FieldRepresentation = [[BoardValue; 4]; 4];
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Eq, PartialEq)]
 pub struct Board {
     cells: HashMap<Coordinate, BoardValue>,
     size: u8,
+}
+
+impl fmt::Debug for Board {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self.get_representation())
+    }
 }
 
 impl Board {
