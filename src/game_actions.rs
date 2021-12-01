@@ -28,9 +28,9 @@ mod tests {
     use crate::game_actions::move_down;
     use crate::game_actions::Board;
 
-    const V0: BoardValue = BoardValue::new(0);
-    const V2: BoardValue = BoardValue::new(2);
-    const V4: BoardValue = BoardValue::new(4);
+    const X: BoardValue = BoardValue::new(0);
+    const TWO: BoardValue = BoardValue::new(2);
+    const FOUR: BoardValue = BoardValue::new(4);
 
     #[test]
     fn it_should_do_nothing_on_empty_board() {
@@ -44,10 +44,10 @@ mod tests {
     #[test]
     fn it_should_move_one_value_down() {
         let mut board = Board::from_field([
-            [V0, V0, V0, V0],
-            [V0, V0, V0, V0],
-            [V2, V0, V0, V0],
-            [V0, V0, V0, V0],
+            [X, X, X, X],
+            [X, X, X, X],
+            [TWO, X, X, X],
+            [X, X, X, X],
         ]);
 
         move_down(&mut board);
@@ -55,10 +55,10 @@ mod tests {
         assert_eq!(
             board,
             Board::from_field([
-                [V0, V0, V0, V0],
-                [V0, V0, V0, V0],
-                [V0, V0, V0, V0],
-                [V2, V0, V0, V0]
+                [X, X, X, X],
+                [X, X, X, X],
+                [X, X, X, X],
+                [TWO, X, X, X]
             ])
         );
     }
@@ -66,10 +66,10 @@ mod tests {
     #[test]
     fn it_should_move_two_values_down() {
         let mut board = Board::from_field([
-            [V0, V0, V0, V0],
-            [V0, V0, V0, V0],
-            [V2, V2, V0, V0],
-            [V0, V0, V0, V0],
+            [X, X, X, X],
+            [X, X, X, X],
+            [TWO, TWO, X, X],
+            [X, X, X, X],
         ]);
 
         move_down(&mut board);
@@ -77,10 +77,10 @@ mod tests {
         assert_eq!(
             board,
             Board::from_field([
-                [V0, V0, V0, V0],
-                [V0, V0, V0, V0],
-                [V0, V0, V0, V0],
-                [V2, V2, V0, V0]
+                [X, X, X, X],
+                [X, X, X, X],
+                [X, X, X, X],
+                [TWO, TWO, X, X]
             ])
         );
     }
@@ -88,10 +88,10 @@ mod tests {
     #[test]
     fn it_should_move_two_different_values_down() {
         let mut board = Board::from_field([
-            [V0, V0, V0, V0],
-            [V0, V0, V0, V0],
-            [V2, V4, V0, V0],
-            [V0, V0, V0, V0],
+            [X, X, X, X],
+            [X, X, X, X],
+            [TWO, FOUR, X, X],
+            [X, X, X, X],
         ]);
 
         move_down(&mut board);
@@ -99,10 +99,10 @@ mod tests {
         assert_eq!(
             board,
             Board::from_field([
-                [V0, V0, V0, V0],
-                [V0, V0, V0, V0],
-                [V0, V0, V0, V0],
-                [V2, V4, V0, V0]
+                [X, X, X, X],
+                [X, X, X, X],
+                [X, X, X, X],
+                [TWO, FOUR, X, X]
             ])
         );
     }
