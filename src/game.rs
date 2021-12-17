@@ -16,7 +16,7 @@ impl Game {
         Self { board }
     }
 
-    pub fn get_score(&self) -> u128 {
+    pub fn get_score(&self) -> u64 {
         0
     }
 
