@@ -7,7 +7,7 @@ pub struct Game {
     board: Board,
 }
 
-type ExternalFieldRepresentation = Vec<Vec<u32>>;
+pub type ExternalFieldRepresentation = Vec<Vec<u32>>;
 
 impl Game {
     pub fn new() -> Self {
