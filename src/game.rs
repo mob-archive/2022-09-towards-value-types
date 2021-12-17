@@ -7,7 +7,7 @@ pub struct Game {
     board: Board,
 }
 
-type ExternalFieldRepresentation = [[u32; 4]; 4];
+type ExternalFieldRepresentation = Vec<Vec<u32>>;
 
 impl Game {
     pub fn new() -> Self {
@@ -33,7 +33,7 @@ impl Game {
                     .try_into()
                     .unwrap()
             })
-            .collect::<Vec<[u32; 4]>>()
+            .collect::<Vec<Vec<u32>>>()
             .try_into()
             .unwrap()
     }
@@ -74,7 +74,7 @@ mod tests {
         let field = game.get_field();
 
         let expected: ExternalFieldRepresentation;
-        expected = [[0, 0, 0, 0], [0, 0, 0, 0], [2, 0, 0, 0], [0, 0, 0, 0]];
+        expected = vec![vec![0, 0, 0, 0], vec![0, 0, 0, 0], vec![2, 0, 0, 0], vec![0, 0, 0, 0]];
 
         assert_eq!(field, expected);
     }
@@ -87,7 +87,7 @@ mod tests {
         let field = game.get_field();
 
         let expected: ExternalFieldRepresentation;
-        expected = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [2, 0, 0, 0]];
+        expected = vec![vec![0, 0, 0, 0], vec![0, 0, 0, 0], vec![0, 0, 0, 0], vec![2, 0, 0, 0]];
 
         assert_eq!(field, expected);
     }
