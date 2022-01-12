@@ -12,24 +12,24 @@ pub fn move_and_merge(row: Row) -> Row {
     result
 }
 
-fn pull(row: Row, index:usize) -> Row {
+fn pull(row: Row, index: usize) -> Row {
     let mut result = row;
-    let next_value = find_next_value(result, index+1);
+    let next_value = find_next_value(result, index + 1);
     if result[index] == BoardValue::new(0) {
         result[index] = result[next_value];
         result[next_value] = BoardValue::new(0);
-    } 
+    }
     result
 }
 
-fn merge(row: Row, index:usize) -> Row {
+fn merge(row: Row, index: usize) -> Row {
     let mut result = row;
-    let next_value = find_next_value(result, index+1);
+    let next_value = find_next_value(result, index + 1);
     if result[index] == result[next_value] {
         result[index] = result[index].duplicate();
         result[next_value] = BoardValue::new(0);
-        result = shift_values(result, index+1);
-    } 
+        result = shift_values(result, index + 1);
+    }
     result
 }
 
@@ -103,7 +103,10 @@ mod tests {
 
     #[test]
     fn it_should_not_move_when_all_spots_have_different_values() {
-        assert_eq!(move_and_merge([TWO, FOUR, EIGHT, SIXTEEN]), [TWO, FOUR, EIGHT, SIXTEEN]);
+        assert_eq!(
+            move_and_merge([TWO, FOUR, EIGHT, SIXTEEN]),
+            [TWO, FOUR, EIGHT, SIXTEEN]
+        );
     }
 
     // only merge
@@ -160,6 +163,9 @@ mod tests {
 
     #[test]
     fn it_should_merge_and_move_two_same_values_in_between_other_values() {
-        assert_eq!(move_and_merge([FOUR, TWO, TWO, FOUR]), [FOUR, FOUR, FOUR, X]);
+        assert_eq!(
+            move_and_merge([FOUR, TWO, TWO, FOUR]),
+            [FOUR, FOUR, FOUR, X]
+        );
     }
 }
