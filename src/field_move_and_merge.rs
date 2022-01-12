@@ -11,40 +11,51 @@ pub fn move_and_merge_left(field: Field) -> Field {
     ]
 }
 
-pub fn move_and_merge_right(field: Field) -> Field {
-    [
-        reverse(move_and_merge_row_left(reverse(field[0]))),
-        reverse(move_and_merge_row_left(reverse(field[1]))),
-        reverse(move_and_merge_row_left(reverse(field[2]))),
-        reverse(move_and_merge_row_left(reverse(field[3]))),
-    ]
-}
-
-fn reverse(row: Row) -> Row {
-    [row[3], row[2], row[1], row[0]]
-}
-
 pub fn move_and_merge_up(field: Field) -> Field {
-    let new_matrix: Field = [
-        move_and_merge_row_left(extract_column(field, 0)),
-        move_and_merge_row_left(extract_column(field, 1)),
-        move_and_merge_row_left(extract_column(field, 2)),
-        move_and_merge_row_left(extract_column(field, 3)),
-    ];
+    rotate_clockwise(move_and_merge_left(rotate_counterclockwise(field)))
+}
+
+pub fn move_and_merge_down(field: Field) -> Field {
+    rotate_counterclockwise(move_and_merge_left(rotate_clockwise(field)))
+}
+
+pub fn move_and_merge_right(field: Field) -> Field {
+    rotate_clockwise(move_and_merge_up(rotate_counterclockwise(field)))
+}
+
+fn rotate_counterclockwise(field: Field) -> Field {
     [
-        extract_column(new_matrix, 0),
-        extract_column(new_matrix, 1),
-        extract_column(new_matrix, 2),
-        extract_column(new_matrix, 3),
+        extract_column_reversed(field, 3),
+        extract_column_reversed(field, 2),
+        extract_column_reversed(field, 1),
+        extract_column_reversed(field, 0)
     ]
 }
 
-fn extract_column(field: Field, column_index: usize) -> Row {
+fn extract_column_reversed(field: Field, column_index: usize) -> Row {
     [
         field[0][column_index],
         field[1][column_index],
         field[2][column_index],
         field[3][column_index],
+    ]
+}
+
+fn rotate_clockwise(field: Field) -> Field {
+    [
+        extract_column(field, 0),
+        extract_column(field, 1),
+        extract_column(field, 2),
+        extract_column(field, 3)
+    ]
+}
+
+fn extract_column(field: Field, index: usize) -> Row {
+    [
+        field[3][index],
+        field[2][index],
+        field[1][index],
+        field[0][index],
     ]
 }
 
@@ -135,6 +146,57 @@ mod tests {
         [X, X, X, X],
         [X, X, X, X],
     ];
+
+    #[cfg(test)]
+    mod tests_rotate_clockwise {
+        use crate::field_move_and_merge::rotate_clockwise;
+        use crate::field_move_and_merge::tests::*;
+        #[test]
+        fn it_should_rotate_empty_field() {
+            assert_eq!(rotate_clockwise(EMPTY_FIELD), EMPTY_FIELD);
+        }
+        #[test]
+        fn it_should_rotate_top_left_value_to_top_right_value() {
+            assert_eq!(
+                rotate_clockwise([[TWO, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]]),
+                [[X, X, X, TWO], [X, X, X, X], [X, X, X, X], [X, X, X, X]]
+            );
+        }
+    }
+
+    #[cfg(test)]
+    mod tests_move_and_merge_down {
+        use crate::field_move_and_merge::move_and_merge_down;
+        use crate::field_move_and_merge::tests::*;
+
+        #[test]
+        fn it_should_do_nothing_on_an_empty_field() {
+            assert_eq!(move_and_merge_down(EMPTY_FIELD), EMPTY_FIELD);
+        }
+
+        #[test]
+        fn it_should_move_values_in_all_columns_downwards() {
+            assert_eq!(move_and_merge_down(ALL_VALUES_UP), ALL_VALUES_DOWN);
+        }
+
+        #[test]
+        fn it_should_merge_values_in_all_columns_downwards() {
+            assert_eq!(
+                move_and_merge_down([
+                    [EIGHT, EIGHT, FOUR, TWO],
+                    [EIGHT, EIGHT, FOUR, TWO],
+                    [X, X, X, X],
+                    [X, X, X, X]
+                ]),
+                [
+                    [X, X, X, X],
+                    [X, X, X, X],
+                    [X, X, X, X],
+                    [SIXTEEN, SIXTEEN, EIGHT, FOUR]
+                ]
+            );
+        }
+    }
 
     #[cfg(test)]
     mod tests_move_and_merge_up {
