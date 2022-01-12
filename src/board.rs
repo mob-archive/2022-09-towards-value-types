@@ -4,7 +4,7 @@ use std::fmt;
 use std::collections::HashMap;
 
 pub type Row = [BoardValue; 4];
-pub type FieldRepresentation = [Row; 4];
+pub type Field = [Row; 4];
 
 #[derive(Eq, PartialEq)]
 pub struct Board {
@@ -26,7 +26,7 @@ impl Board {
         }
     }
 
-    pub fn from_field(field: FieldRepresentation) -> Self {
+    pub fn from_field(field: Field) -> Self {
         const VALUE_0: BoardValue = BoardValue::new(0);
         let mut b = Board::default();
         for row in 0..b.size {
@@ -57,9 +57,9 @@ impl Board {
         self.cells.remove(&coordinate);
     }
 
-    pub fn get_representation(&self) -> FieldRepresentation {
+    pub fn get_representation(&self) -> Field {
         const V: BoardValue = BoardValue::new(0);
-        let mut result: FieldRepresentation =
+        let mut result: Field =
             [[V, V, V, V], [V, V, V, V], [V, V, V, V], [V, V, V, V]];
 
         for row in 0..self.size {
@@ -86,7 +86,7 @@ mod tests {
     use crate::board::Board;
     use crate::board::BoardValue;
     use crate::board::Coordinate;
-    use crate::board::FieldRepresentation;
+    use crate::board::Field;
 
     const FIRST_COORDINATE: Coordinate = Coordinate { row: 0, column: 0 };
     const SECOND_COORDINATE: Coordinate = Coordinate { row: 1, column: 0 };
@@ -171,7 +171,7 @@ mod tests {
         let field = b.get_representation();
 
         const V: BoardValue = BoardValue::new(0);
-        let expected_field: FieldRepresentation =
+        let expected_field: Field =
             [[VALUE_4, V, V, V], [V, V, V, V], [V, V, V, V], [V, V, V, V]];
         assert_eq!(field, expected_field);
     }
@@ -183,7 +183,7 @@ mod tests {
         let field = b.get_representation();
 
         const V: BoardValue = BoardValue::new(0);
-        let expected_field: FieldRepresentation = [
+        let expected_field: Field = [
             [BoardValue::new(2), V, V, V],
             [V, V, V, V],
             [V, V, V, V],
@@ -200,7 +200,7 @@ mod tests {
         let field = b.get_representation();
 
         const V: BoardValue = BoardValue::new(0);
-        let expected_field: FieldRepresentation =
+        let expected_field: Field =
             [[V, V, V, V], [VALUE_4, V, V, V], [V, V, V, V], [V, V, V, V]];
         assert_eq!(field, expected_field);
     }
@@ -214,7 +214,7 @@ mod tests {
         let field = b.get_representation();
 
         const V: BoardValue = BoardValue::new(0);
-        let expected_field: FieldRepresentation = [
+        let expected_field: Field = [
             [VALUE_4, V, V, V],
             [VALUE_4, V, V, V],
             [V, V, V, V],
@@ -232,7 +232,7 @@ mod tests {
         let field = b.get_representation();
 
         const V: BoardValue = BoardValue::new(0);
-        let expected_field: FieldRepresentation = [
+        let expected_field: Field = [
             [VALUE_2, V, V, V],
             [VALUE_4, V, V, V],
             [V, V, V, V],
@@ -249,7 +249,7 @@ mod tests {
 
         let field = b.get_representation();
 
-        let expected_field: FieldRepresentation = [
+        let expected_field: Field = [
             [V, V, V, V],
             [V, V, V, V],
             [V, V, V, V],
