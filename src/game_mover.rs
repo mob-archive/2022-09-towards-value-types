@@ -1,8 +1,17 @@
+use crate::board::FieldRepresentation;
+use crate::board::Row;
 use crate::board_value::BoardValue;
 
-pub type Row = [BoardValue; 4];
+pub fn move_and_merge_left(field: FieldRepresentation) -> FieldRepresentation {
+    [
+        move_and_merge(field[0]),
+        move_and_merge(field[1]),
+        move_and_merge(field[2]),
+        move_and_merge(field[3]),
+    ]
+}
 
-pub fn move_and_merge(row: Row) -> Row {
+fn move_and_merge(row: Row) -> Row {
     let mut result: Row = row; // Implicit clone
 
     for index in 0..3 {
@@ -55,7 +64,63 @@ fn shift_values(row: Row, start_index: usize) -> Row {
 }
 
 #[cfg(test)]
-mod tests {
+mod tests_move_and_merge_left {
+    use crate::game_mover::move_and_merge_left;
+    use crate::game_mover::BoardValue;
+
+    const X: BoardValue = BoardValue::new(0);
+    const TWO: BoardValue = BoardValue::new(2);
+    const FOUR: BoardValue = BoardValue::new(4);
+    const EIGHT: BoardValue = BoardValue::new(8);
+    const SIXTEEN: BoardValue = BoardValue::new(16);
+
+    #[test]
+    fn it_should_do_nothing_on_an_empty_field() {
+        assert_eq!(
+            move_and_merge_left([[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]]),
+            [[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]]
+        );
+    }
+
+    #[test]
+    fn it_should_move_values_in_all_rows_to_the_left() {
+        assert_eq!(
+            move_and_merge_left([
+                [X, X, X, TWO],
+                [X, X, X, FOUR],
+                [X, X, X, EIGHT],
+                [X, X, X, SIXTEEN]
+            ]),
+            [
+                [TWO, X, X, X],
+                [FOUR, X, X, X],
+                [EIGHT, X, X, X],
+                [SIXTEEN, X, X, X]
+            ]
+        );
+    }
+
+    #[test]
+    fn it_should_merge_values_in_all_rows_to_the_left() {
+        assert_eq!(
+            move_and_merge_left([
+                [X, X, TWO, TWO],
+                [X, X, FOUR, FOUR],
+                [X, X, EIGHT, EIGHT],
+                [X, X, EIGHT, EIGHT]
+            ]),
+            [
+                [FOUR, X, X, X],
+                [EIGHT, X, X, X],
+                [SIXTEEN, X, X, X],
+                [SIXTEEN, X, X, X]
+            ]
+        );
+    }
+}
+
+#[cfg(test)]
+mod tests_move_and_merge {
 
     use crate::game_mover::move_and_merge;
     use crate::game_mover::BoardValue;

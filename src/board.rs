@@ -3,7 +3,8 @@ use crate::coordinate::Coordinate;
 use std::fmt;
 use std::collections::HashMap;
 
-pub type FieldRepresentation = [[BoardValue; 4]; 4];
+pub type Row = [BoardValue; 4];
+pub type FieldRepresentation = [Row; 4];
 
 #[derive(Eq, PartialEq)]
 pub struct Board {
