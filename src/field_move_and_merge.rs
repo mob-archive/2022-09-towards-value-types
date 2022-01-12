@@ -11,6 +11,19 @@ pub fn move_and_merge_left(field: Field) -> Field {
     ]
 }
 
+pub fn move_and_merge_right(field: Field) -> Field {
+    [
+        reverse(move_and_merge_row_left(reverse(field[0]))),
+        reverse(move_and_merge_row_left(reverse(field[1]))),
+        reverse(move_and_merge_row_left(reverse(field[2]))),
+        reverse(move_and_merge_row_left(reverse(field[3]))),
+    ]
+}
+
+fn reverse(row: Row) -> Row {
+    [row[3],row[2],row[1],row[0]]
+}
+
 fn move_and_merge_row_left(row: Row) -> Row {
     let mut result: Row = row; // Implicit clone
 
@@ -61,6 +74,62 @@ fn shift_values(row: Row, start_index: usize) -> Row {
         result[source_index] = BoardValue::new(0);
     }
     result
+}
+
+#[cfg(test)]
+mod tests_move_and_merge_right {
+    use crate::field_move_and_merge::move_and_merge_right;
+    use crate::field_move_and_merge::BoardValue;
+
+    const X: BoardValue = BoardValue::new(0);
+    const TWO: BoardValue = BoardValue::new(2);
+    const FOUR: BoardValue = BoardValue::new(4);
+    const EIGHT: BoardValue = BoardValue::new(8);
+    const SIXTEEN: BoardValue = BoardValue::new(16);
+
+    #[test]
+    fn it_should_do_nothing_on_an_empty_field() {
+        assert_eq!(
+            move_and_merge_right([[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]]),
+            [[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]]
+        );
+    }
+
+    #[test]
+    fn it_should_move_values_in_all_rows_to_the_right() {
+        assert_eq!(
+            move_and_merge_right([
+                [TWO, X, X, X],
+                [FOUR, X, X, X],
+                [EIGHT, X, X, X],
+                [SIXTEEN, X, X, X]
+            ]),
+            [
+                [X, X, X, TWO],
+                [X, X, X, FOUR],
+                [X, X, X, EIGHT],
+                [X, X, X, SIXTEEN]
+            ]
+        );
+    }
+
+    #[test]
+    fn it_should_merge_values_in_all_rows_to_the_left() {
+        assert_eq!(
+            move_and_merge_right([
+                [TWO, TWO, X, X],
+                [FOUR, FOUR, X, X],
+                [EIGHT, EIGHT, X, X],
+                [EIGHT, EIGHT, X, X]
+            ]),
+            [
+                [X, X, X, FOUR],
+                [X, X, X, EIGHT],
+                [X, X, X, SIXTEEN],
+                [X, X, X, SIXTEEN]
+            ]
+        );
+    }
 }
 
 #[cfg(test)]
@@ -158,12 +227,18 @@ mod tests_move_and_merge_row_left {
 
     #[test]
     fn it_should_stack_different_values() {
-        assert_eq!(move_and_merge_row_left([TWO, X, FOUR, X]), [TWO, FOUR, X, X]);
+        assert_eq!(
+            move_and_merge_row_left([TWO, X, FOUR, X]),
+            [TWO, FOUR, X, X]
+        );
     }
 
     #[test]
     fn it_should_move_stacked_values() {
-        assert_eq!(move_and_merge_row_left([X, TWO, FOUR, X]), [TWO, FOUR, X, X]);
+        assert_eq!(
+            move_and_merge_row_left([X, TWO, FOUR, X]),
+            [TWO, FOUR, X, X]
+        );
     }
 
     #[test]
@@ -182,7 +257,10 @@ mod tests_move_and_merge_row_left {
 
     #[test]
     fn it_should_merge_two_values_with_four() {
-        assert_eq!(move_and_merge_row_left([FOUR, FOUR, X, X]), [EIGHT, X, X, X]);
+        assert_eq!(
+            move_and_merge_row_left([FOUR, FOUR, X, X]),
+            [EIGHT, X, X, X]
+        );
     }
 
     #[test]
@@ -197,33 +275,51 @@ mod tests_move_and_merge_row_left {
 
     #[test]
     fn it_should_merge_two_same_values_and_leave_the_third_same_value() {
-        assert_eq!(move_and_merge_row_left([TWO, TWO, TWO, X]), [FOUR, TWO, X, X]);
+        assert_eq!(
+            move_and_merge_row_left([TWO, TWO, TWO, X]),
+            [FOUR, TWO, X, X]
+        );
     }
 
     #[test]
     fn it_should_merge_two_same_values_and_leave_the_third_same_value_first_spot_empty() {
-        assert_eq!(move_and_merge_row_left([X, TWO, TWO, TWO]), [FOUR, TWO, X, X]);
+        assert_eq!(
+            move_and_merge_row_left([X, TWO, TWO, TWO]),
+            [FOUR, TWO, X, X]
+        );
     }
 
     #[test]
     fn it_should_merge_both_twins_of_same_values() {
-        assert_eq!(move_and_merge_row_left([TWO, TWO, TWO, TWO]), [FOUR, FOUR, X, X]);
+        assert_eq!(
+            move_and_merge_row_left([TWO, TWO, TWO, TWO]),
+            [FOUR, FOUR, X, X]
+        );
     }
 
     // move and merge
     #[test]
     fn it_should_merge_and_move_two_same_values() {
-        assert_eq!(move_and_merge_row_left([FOUR, X, TWO, TWO]), [FOUR, FOUR, X, X]);
+        assert_eq!(
+            move_and_merge_row_left([FOUR, X, TWO, TWO]),
+            [FOUR, FOUR, X, X]
+        );
     }
 
     #[test]
     fn it_should_merge_and_move_two_same_values_empty_in_between() {
-        assert_eq!(move_and_merge_row_left([FOUR, TWO, X, TWO]), [FOUR, FOUR, X, X]);
+        assert_eq!(
+            move_and_merge_row_left([FOUR, TWO, X, TWO]),
+            [FOUR, FOUR, X, X]
+        );
     }
 
     #[test]
     fn it_should_merge_and_move_two_same_values_first_spot_empty() {
-        assert_eq!(move_and_merge_row_left([X, FOUR, TWO, TWO]), [FOUR, FOUR, X, X]);
+        assert_eq!(
+            move_and_merge_row_left([X, FOUR, TWO, TWO]),
+            [FOUR, FOUR, X, X]
+        );
     }
 
     #[test]
