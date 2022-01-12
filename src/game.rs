@@ -30,15 +30,11 @@ impl Game {
                     .into_iter()
                     .map(|cell| cell.get_value())
                     .collect::<Vec<u32>>()
-                    .try_into()
-                    .unwrap()
             })
             .collect::<Vec<Vec<u32>>>()
             .into_iter()
             .flatten()
             .collect::<Vec<u32>>()
-            .try_into()
-            .unwrap()
     }
 
     pub fn move_down(&mut self) {
