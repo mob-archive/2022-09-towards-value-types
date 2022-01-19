@@ -1,33 +1,10 @@
 use crate::board::Board;
-use crate::coordinate::Coordinate;
+use crate::field_move_and_merge::*;
 
 pub fn move_down(board: &mut Board) {
-    for _round2 in 0..=3 {
-        for round in 1..=3 {
-            let row: u8 = 3 - round;
-            for column in 0..4 {
-                move_cell_value_down(board, Coordinate { row, column });
-            }
-        }
-    }
-}
-
-fn move_cell_value_down(board: &mut Board, from: Coordinate) {
-    let to = Coordinate {
-        row: from.row + 1,
-        column: from.column,
-    };
-    if board.has_value(from) {
-        if board.has_value(to) {
-            if board.get_value(to) == board.get_value(from) {
-                board.set_value(to, board.get_value(from).duplicate());
-                board.delete_value(from);
-            }
-        } else {
-            board.set_value(to, board.get_value(from));
-            board.delete_value(from);
-        }
-    }
+    let old_field = board.get_representation();
+    let new_field = move_and_merge_down(old_field);
+    board.save_representation(new_field);
 }
 
 #[cfg(test)]
@@ -42,22 +19,13 @@ mod tests {
     const FOUR: BoardValue = BoardValue::new(4);
 
     #[test]
-    fn it_should_do_nothing_on_empty_board() {
-        let mut board = Board::default();
-
-        move_down(&mut board);
-
-        assert_eq!(board, Board::default());
-    }
-
-    #[test]
-    fn it_should_move_one_value_down() {
+    fn it_should_perform_the_move_down_action() {
         #[rustfmt::skip]
         let mut board = Board::from_field([
-            [X, X, X, X],
-            [X, X, X, X],
-            [TWO, X, X, X],
-            [X, X, X, X]
+            [TWO, TWO, X, TWO],
+            [TWO, X, X, TWO],
+            [X, X, X, TWO],
+            [X, X, TWO, TWO]
         ]);
 
         move_down(&mut board);
@@ -66,176 +34,9 @@ mod tests {
         assert_eq!(board, Board::from_field([
             [X, X, X, X],
             [X, X, X, X],
-            [X, X, X, X],
-            [TWO, X, X, X]
+            [X, X, X, FOUR],
+            [FOUR, TWO, TWO, FOUR]
         ]));
     }
 
-    #[test]
-    fn it_should_move_two_values_down() {
-        #[rustfmt::skip]
-        let mut board = Board::from_field([
-            [X, X, X, X],
-            [X, X, X, X],
-            [TWO, TWO, X, X],
-            [X, X, X, X]
-        ]);
-
-        move_down(&mut board);
-
-        #[rustfmt::skip]
-        assert_eq!(board, Board::from_field([
-            [X, X, X, X],
-            [X, X, X, X],
-            [X, X, X, X],
-            [TWO, TWO, X, X]
-        ]));
-    }
-
-    #[test]
-    fn it_should_move_two_different_values_down() {
-        #[rustfmt::skip]
-        let mut board = Board::from_field([
-            [X, X, X, X],
-            [X, X, X, X],
-            [TWO, FOUR, X, X],
-            [X, X, X, X]
-        ]);
-
-        move_down(&mut board);
-
-        #[rustfmt::skip]
-        assert_eq!(board, Board::from_field([
-            [X, X, X, X],
-            [X, X, X, X],
-            [X, X, X, X],
-            [TWO, FOUR, X, X]
-        ]));
-    }
-
-    #[test]
-    fn it_should_move_values_down_in_all_columns() {
-        #[rustfmt::skip]
-        let mut board = Board::from_field([
-            [X, X, X, X],
-            [X, X, X, X],
-            [TWO, TWO, TWO, TWO],
-            [X, X, X, X],
-        ]);
-
-        move_down(&mut board);
-
-        #[rustfmt::skip]
-        assert_eq!(board, Board::from_field([
-            [X, X, X, X],
-            [X, X, X, X],
-            [X, X, X, X],
-            [TWO, TWO, TWO, TWO]
-        ]));
-    }
-
-    #[test]
-    fn it_should_move_values_down_from_top_row_to_bottom_in_first_column() {
-        #[rustfmt::skip]
-        let mut board = Board::from_field([
-            [TWO, X, X, X],
-            [X, X, X, X],
-            [X, X, X, X],
-            [X, X, X, X]
-        ]);
-
-        move_down(&mut board);
-
-        #[rustfmt::skip]
-        assert_eq!(board, Board::from_field([
-            [X, X, X, X],
-            [X, X, X, X],
-            [X, X, X, X],
-            [TWO, X, X, X]
-        ]));
-    }
-
-    #[test]
-    fn it_should_move_two_different_values_one_down_in_the_same_column() {
-        #[rustfmt::skip]
-        let mut board = Board::from_field([
-            [X, X, X, X],
-            [TWO, X, X, X],
-            [FOUR, X, X, X],
-            [X, X, X, X]
-        ]);
-
-        move_down(&mut board);
-
-        #[rustfmt::skip]
-        assert_eq!(board, Board::from_field([
-                [X, X, X, X],
-                [X, X, X, X],
-                [TWO, X, X, X],
-                [FOUR, X, X, X]
-        ]));
-    }
-
-    #[test]
-    fn it_should_move_two_different_values_down_in_the_same_column() {
-        #[rustfmt::skip]
-        let mut board = Board::from_field([
-            [TWO, X, X, X],
-            [FOUR, X, X, X],
-            [X, X, X, X],
-            [X, X, X, X]
-        ]);
-
-        move_down(&mut board);
-
-        #[rustfmt::skip]
-        assert_eq!(board, Board::from_field([
-            [X, X, X, X],
-            [X, X, X, X],
-            [TWO, X, X, X],
-            [FOUR, X, X, X]
-        ]));
-    }
-
-    #[test]
-    fn it_should_merge_two_equal_values_in_the_same_column() {
-        #[rustfmt::skip]
-        let mut board = Board::from_field([
-            [X, X, X, X],
-            [X, X, X, X],
-            [TWO, X, X, X],
-            [TWO, X, X, X]
-        ]);
-
-        move_down(&mut board);
-
-        #[rustfmt::skip]
-        assert_eq!(board, Board::from_field([
-            [X, X, X, X],
-            [X, X, X, X],
-            [X, X, X, X],
-            [FOUR, X, X, X]
-        ]));
-    }
-
-    #[test]
-    fn it_should_merge_two_equal_values_in_the_same_column_but_one_row_apart() {
-        #[rustfmt::skip]
-        let mut board = Board::from_field([
-            [X, X, X, X],
-            [TWO, X, X, X],
-            [X, X, X, X],
-            [TWO, X, X, X]
-        ]);
-
-        move_down(&mut board);
-
-        #[rustfmt::skip]
-        assert_eq!(board, Board::from_field([
-            [X, X, X, X],
-            [X, X, X, X],
-            [X, X, X, X],
-            [FOUR, X, X, X]
-        ]));
-    }
 }
