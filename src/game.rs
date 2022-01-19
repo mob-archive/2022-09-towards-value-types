@@ -1,7 +1,7 @@
 use crate::board::Board;
 use crate::board_value::BoardValue;
 use crate::coordinate::Coordinate;
-use crate::game_actions::move_down;
+use crate::game_actions::*;
 
 pub struct Game {
     board: Board,
@@ -39,6 +39,18 @@ impl Game {
 
     pub fn move_down(&mut self) {
         move_down(&mut self.board);
+    }
+
+    pub fn move_right(&mut self) {
+        move_right(&mut self.board);
+    }
+
+    pub fn move_up(&mut self) {
+        move_up(&mut self.board);
+    }
+
+    pub fn move_left(&mut self) {
+        move_left(&mut self.board);
     }
 }
 
@@ -83,11 +95,44 @@ mod tests {
         let mut game = Game::new();
 
         game.move_down();
-        let field = game.get_field();
 
-        let expected: ExternalFieldRepresentation;
-        expected = vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0];
+        assert_eq!(
+            game.get_field(),
+            vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0]
+        );
+    }
+    #[test]
+    fn it_moves_right() {
+        let mut game = Game::new();
 
-        assert_eq!(field, expected);
+        game.move_right();
+
+        assert_eq!(
+            game.get_field(),
+            vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0]
+        );
+    }
+    #[test]
+    fn it_moves_up() {
+        let mut game = Game::new();
+
+        game.move_up();
+
+        assert_eq!(
+            game.get_field(),
+            vec![2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        );
+    }
+
+    #[test]
+    fn it_moves_left() {
+        let mut game = Game::new();
+
+        game.move_left();
+
+        assert_eq!(
+            game.get_field(),
+            vec![0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0]
+        );
     }
 }
