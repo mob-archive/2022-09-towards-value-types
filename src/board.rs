@@ -13,8 +13,13 @@ pub struct Board {
 }
 
 impl fmt::Debug for Board {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self.get_representation())
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            formatter,
+            "{:?}, length: {:?}",
+            self.get_representation(),
+            self.cells.len()
+        )
     }
 }
 
@@ -27,17 +32,8 @@ impl Board {
     }
 
     pub fn from_field(field: Field) -> Self {
-        const VALUE_0: BoardValue = BoardValue::new(0);
         let mut b = Board::default();
-        for row in 0..b.size {
-            for column in 0..b.size {
-                let value = field[row as usize][column as usize];
-                if value != VALUE_0 {
-                    let coordinate = Coordinate { row, column };
-                    b.set_value(coordinate, value);
-                }
-            }
-        }
+        b.save_representation(field);
         b
     }
 
@@ -71,6 +67,21 @@ impl Board {
         }
         result
     }
+
+    pub fn save_representation(&mut self, field: Field) {
+        const VALUE_0: BoardValue = BoardValue::new(0);
+        for row in 0..self.size {
+            for column in 0..self.size {
+                let value = field[row as usize][column as usize];
+                let coordinate = Coordinate { row, column };
+                if value == VALUE_0 {
+                    self.delete_value(coordinate);
+                } else {
+                    self.set_value(coordinate, value);
+                }
+            }
+        }
+    }
 }
 
 impl Default for Board {
@@ -85,12 +96,15 @@ mod tests {
     use crate::board::Board;
     use crate::board::BoardValue;
     use crate::board::Coordinate;
+    use crate::board::Field;
     const FIRST_COORDINATE: Coordinate = Coordinate { row: 0, column: 0 };
     const SECOND_COORDINATE: Coordinate = Coordinate { row: 1, column: 0 };
     const V: BoardValue = BoardValue::new(0);
     const VALUE_2: BoardValue = BoardValue::new(2);
     const VALUE_4: BoardValue = BoardValue::new(4);
-    
+    fn create_board_with(field: Field) -> Board {
+        Board::from_field(field)
+    }
     fn create_board_with_first_coordinate(value: BoardValue) -> Board {
         let mut b = Board::default();
         b.set_value(FIRST_COORDINATE, value);
@@ -105,7 +119,42 @@ mod tests {
 
     mod field_representations {
         use crate::board::tests::*;
-        use crate::board::Field;
+        const EMPTY_FIELD: Field = [[V, V, V, V], [V, V, V, V], [V, V, V, V], [V, V, V, V]];
+        const NON_EMPTY_FIELD: Field =
+            [[VALUE_4, V, V, V], [V, V, V, V], [V, V, V, V], [V, V, V, V]];
+        const NON_EMPTY_FIELD_CROSS: Field = [
+            [VALUE_4, V, V, V],
+            [V, VALUE_4, V, V],
+            [V, V, VALUE_4, V],
+            [V, V, V, VALUE_4],
+        ];
+
+        #[test]
+        fn it_should_save_initial_representation() {
+            let mut b = create_board_with(NON_EMPTY_FIELD);
+
+            b.save_representation(EMPTY_FIELD);
+
+            assert_eq!(b.get_representation(), EMPTY_FIELD);
+        }
+
+        #[test]
+        fn it_should_save_non_initial_representation() {
+            let mut b = create_board_with(EMPTY_FIELD);
+
+            b.save_representation(NON_EMPTY_FIELD);
+
+            assert_eq!(b.get_representation(), NON_EMPTY_FIELD);
+        }
+
+        #[test]
+        fn it_should_save_cross_representation() {
+            let mut b = create_board_with(EMPTY_FIELD);
+
+            b.save_representation(NON_EMPTY_FIELD_CROSS);
+
+            assert_eq!(b.get_representation(), NON_EMPTY_FIELD_CROSS);
+        }
 
         #[test]
         fn it_should_convert_to_external_representation() {
