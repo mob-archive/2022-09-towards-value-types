@@ -1,6 +1,8 @@
 extern crate rand;
 
-pub fn random() -> f32 {
+pub type RandomNumber = f32;
+
+pub fn random() -> RandomNumber {
     rand::random()
 }
 
