@@ -38,19 +38,19 @@ impl Game {
     }
 
     pub fn move_down(&mut self) {
-        move_down(&mut self.board);
+        move_down(&mut self.board, 0.0, 0.0);
     }
 
     pub fn move_right(&mut self) {
-        move_right(&mut self.board);
+        move_right(&mut self.board, 0.0, 0.0);
     }
 
     pub fn move_up(&mut self) {
-        move_up(&mut self.board);
+        move_up(&mut self.board, 0.0, 0.0);
     }
 
     pub fn move_left(&mut self) {
-        move_left(&mut self.board);
+        move_left(&mut self.board, 0.0, 0.0);
     }
 }
 
@@ -98,7 +98,7 @@ mod tests {
 
         assert_eq!(
             game.get_field(),
-            vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0]
+            vec![2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0]
         );
     }
     #[test]
@@ -109,7 +109,7 @@ mod tests {
 
         assert_eq!(
             game.get_field(),
-            vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0]
+            vec![2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0]
         );
     }
     #[test]
@@ -120,7 +120,7 @@ mod tests {
 
         assert_eq!(
             game.get_field(),
-            vec![2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            vec![2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         );
     }
 
@@ -132,7 +132,7 @@ mod tests {
 
         assert_eq!(
             game.get_field(),
-            vec![0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0]
+            vec![2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0]
         );
     }
 }
