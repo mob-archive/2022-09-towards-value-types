@@ -2,6 +2,7 @@ use crate::board::Board;
 use crate::board_value::BoardValue;
 use crate::coordinate::Coordinate;
 use crate::game_actions::*;
+use crate::random::random;
 
 pub struct Game {
     board: Board,
@@ -38,19 +39,19 @@ impl Game {
     }
 
     pub fn move_down(&mut self) {
-        move_down(&mut self.board, 0.0, 0.0);
+        move_down(&mut self.board, random(), random());
     }
 
     pub fn move_right(&mut self) {
-        move_right(&mut self.board, 0.0, 0.0);
+        move_right(&mut self.board, random(), random());
     }
 
     pub fn move_up(&mut self) {
-        move_up(&mut self.board, 0.0, 0.0);
+        move_up(&mut self.board, random(), random());
     }
 
     pub fn move_left(&mut self) {
-        move_left(&mut self.board, 0.0, 0.0);
+        move_left(&mut self.board, random(), random());
     }
 }
 
@@ -65,6 +66,16 @@ mod tests {
 
     use crate::game::ExternalFieldRepresentation;
     use crate::game::Game;
+
+    fn count_filled_fields(field: ExternalFieldRepresentation) -> u8 {
+        let mut number = 0;
+        for x in field {
+            if x != 0 {
+                number = number + 1
+            }
+        }
+        number
+    }
 
     #[test]
     fn it_initializes_a_new_game_with_zero_score() {
@@ -90,49 +101,105 @@ mod tests {
         assert_eq!(field, expected);
     }
 
-    #[test]
-    fn it_moves_down() {
-        let mut game = Game::new();
+    // Index for the 4x4 field in a vector representation
+    // 0, 1, 2, 3
+    // 4, 5, 6, 7
+    // 8, 9,10,11
+    //12,13,14,15
 
-        game.move_down();
+    #[cfg(test)]
+    mod move_down {
+        use crate::game::tests::*;
+        #[test]
+        fn it_moves_initial_value_down() {
+            let mut game = Game::new();
 
-        assert_eq!(
-            game.get_field(),
-            vec![2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0]
-        );
-    }
-    #[test]
-    fn it_moves_right() {
-        let mut game = Game::new();
+            game.move_down();
 
-        game.move_right();
+            let field = game.get_field();
+            let sum_of_values_in_last_row = field[12] + field[13] + field[14] + field[15];
+            assert_ne!(sum_of_values_in_last_row, 0);
+        }
+        #[test]
+        fn it_adds_another_value_to_the_board() {
+            let mut game = Game::new();
 
-        assert_eq!(
-            game.get_field(),
-            vec![2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0]
-        );
-    }
-    #[test]
-    fn it_moves_up() {
-        let mut game = Game::new();
+            game.move_down();
 
-        game.move_up();
-
-        assert_eq!(
-            game.get_field(),
-            vec![2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        );
+            let field = game.get_field();
+            assert_eq!(count_filled_fields(field), 2);
+        }
     }
 
-    #[test]
-    fn it_moves_left() {
-        let mut game = Game::new();
+    #[cfg(test)]
+    mod move_right {
+        use crate::game::tests::*;
+        #[test]
+        fn it_moves_initial_value_right() {
+            let mut game = Game::new();
 
-        game.move_left();
+            game.move_right();
 
-        assert_eq!(
-            game.get_field(),
-            vec![2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0]
-        );
+            let field = game.get_field();
+            let sum_of_values_in_last_row = field[3] + field[7] + field[11] + field[15];
+            assert_ne!(sum_of_values_in_last_row, 0);
+        }
+        #[test]
+        fn it_adds_another_value_to_the_board() {
+            let mut game = Game::new();
+
+            game.move_right();
+
+            let field = game.get_field();
+            assert_eq!(count_filled_fields(field), 2);
+        }
     }
+    #[cfg(test)]
+    mod move_up {
+        use crate::game::tests::*;
+        #[test]
+        fn it_moves_initial_value_up() {
+            let mut game = Game::new();
+
+            game.move_up();
+
+            let field = game.get_field();
+            let sum_of_values_in_last_row = field[0] + field[1] + field[2] + field[3];
+            assert_ne!(sum_of_values_in_last_row, 0);
+        }
+        #[test]
+        fn it_adds_another_value_to_the_board() {
+            let mut game = Game::new();
+
+            game.move_up();
+
+            let field = game.get_field();
+            assert_eq!(count_filled_fields(field), 2);
+        }
+    }
+
+    #[cfg(test)]
+    mod move_left {
+        use crate::game::tests::*;
+        #[test]
+        fn it_moves_initial_value_left() {
+            let mut game = Game::new();
+
+            game.move_left();
+
+            let field = game.get_field();
+            let sum_of_values_in_last_row = field[0] + field[4] + field[8] + field[12];
+            assert_ne!(sum_of_values_in_last_row, 0);
+        }
+        #[test]
+        fn it_adds_another_value_to_the_board() {
+            let mut game = Game::new();
+
+            game.move_left();
+
+            let field = game.get_field();
+            assert_eq!(count_filled_fields(field), 2);
+        }
+    }
+
 }
