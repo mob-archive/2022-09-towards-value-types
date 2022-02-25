@@ -94,6 +94,26 @@ mod tests {
         assert_eq!(count_filled_fields(field), 1);
     }
 
+    #[test]
+    fn it_should_have_added_a_value_after_move_down_and_up() {
+        let mut game = Game::new();
+
+        game.move_down();
+        game.move_up();
+
+        assert!(count_filled_fields(game.get_field()) > 1);
+    }
+
+    #[test]
+    fn it_should_have_added_a_value_after_move_right_and_left() {
+        let mut game = Game::new();
+
+        game.move_right();
+        game.move_left();
+
+        assert!(count_filled_fields(game.get_field()) > 1);
+    }
+
     // Index for the 4x4 field in a vector representation
     // 0, 1, 2, 3
     // 4, 5, 6, 7
@@ -113,15 +133,6 @@ mod tests {
             let sum_of_values_in_last_row = field[12] + field[13] + field[14] + field[15];
             assert_ne!(sum_of_values_in_last_row, 0);
         }
-        #[test]
-        fn it_adds_another_value_to_the_board() {
-            let mut game = Game::new();
-
-            game.move_down();
-
-            let field = game.get_field();
-            assert_eq!(count_filled_fields(field), 2);
-        }
     }
 
     #[cfg(test)]
@@ -137,15 +148,6 @@ mod tests {
             let sum_of_values_in_last_row = field[3] + field[7] + field[11] + field[15];
             assert_ne!(sum_of_values_in_last_row, 0);
         }
-        #[test]
-        fn it_adds_another_value_to_the_board() {
-            let mut game = Game::new();
-
-            game.move_right();
-
-            let field = game.get_field();
-            assert_eq!(count_filled_fields(field), 2);
-        }
     }
     #[cfg(test)]
     mod move_up {
@@ -159,15 +161,6 @@ mod tests {
             let field = game.get_field();
             let sum_of_values_in_last_row = field[0] + field[1] + field[2] + field[3];
             assert_ne!(sum_of_values_in_last_row, 0);
-        }
-        #[test]
-        fn it_adds_another_value_to_the_board() {
-            let mut game = Game::new();
-
-            game.move_up();
-
-            let field = game.get_field();
-            assert_eq!(count_filled_fields(field), 2);
         }
     }
 
@@ -183,15 +176,6 @@ mod tests {
             let field = game.get_field();
             let sum_of_values_in_last_row = field[0] + field[4] + field[8] + field[12];
             assert_ne!(sum_of_values_in_last_row, 0);
-        }
-        #[test]
-        fn it_adds_another_value_to_the_board() {
-            let mut game = Game::new();
-
-            game.move_left();
-
-            let field = game.get_field();
-            assert_eq!(count_filled_fields(field), 2);
         }
     }
 }

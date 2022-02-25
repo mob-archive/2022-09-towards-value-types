@@ -63,11 +63,12 @@ fn move_board(
     random_number_position: RandomNumber,
 ) {
     let old_field = board.get_representation();
-    let moved = move_and_merge_operation(old_field);
+    let mut moved = move_and_merge_operation(old_field);
     // TODO: gained_points = calculate_points(matrix, neue_matrix)
-    // TODO: if something moved/merged
-    let with_new_value = add_value(moved, random_number_value, random_number_position);
-    board.save_representation(with_new_value);
+    if old_field != moved {
+        moved = add_value(moved, random_number_value, random_number_position);
+    }
+    board.save_representation(moved);
     // TODO: return game_action_result (including gained_points)
 }
 
@@ -116,6 +117,27 @@ mod tests {
     }
 
     #[test]
+    fn it_should_not_add_value_if_nothing_changed_move_down() {
+        #[rustfmt::skip]
+        let mut board = Board::from_field([
+            [X, X, X, X],
+            [X, X, X, X],
+            [X, X, X, X],
+            [TWO, X, X, X]
+        ]);
+
+        move_down(&mut board, 0.0, 0.0);
+
+        #[rustfmt::skip]
+        assert_eq!(board, Board::from_field([
+            [X, X, X, X],
+            [X, X, X, X],
+            [X, X, X, X],
+            [TWO, X, X, X]
+        ]));
+    }
+
+    #[test]
     fn it_should_perform_the_move_right_action() {
         #[rustfmt::skip]
         let mut board = Board::from_field([
@@ -133,6 +155,27 @@ mod tests {
             [X, X, X, FOUR],
             [X, X, X, TWO],
             [X, X, X, FOUR]
+        ]));
+    }
+
+    #[test]
+    fn it_should_not_add_value_if_nothing_changed_move_right() {
+        #[rustfmt::skip]
+        let mut board = Board::from_field([
+            [X, X, X, TWO],
+            [X, X, X, X],
+            [X, X, X, X],
+            [X, X, X, X]
+        ]);
+
+        move_right(&mut board, 0.0, 0.0);
+
+        #[rustfmt::skip]
+        assert_eq!(board, Board::from_field([
+            [X, X, X, TWO],
+            [X, X, X, X],
+            [X, X, X, X],
+            [X, X, X, X]
         ]));
     }
 
@@ -158,6 +201,27 @@ mod tests {
     }
 
     #[test]
+    fn it_should_not_add_value_if_nothing_changed_move_up() {
+        #[rustfmt::skip]
+        let mut board = Board::from_field([
+            [X, X, X, TWO],
+            [X, X, X, X],
+            [X, X, X, X],
+            [X, X, X, X]
+        ]);
+
+        move_up(&mut board, 0.0, 0.0);
+
+        #[rustfmt::skip]
+        assert_eq!(board, Board::from_field([
+            [X, X, X, TWO],
+            [X, X, X, X],
+            [X, X, X, X],
+            [X, X, X, X]
+        ]));
+    }
+
+    #[test]
     fn it_should_perform_the_move_left_action() {
         #[rustfmt::skip]
         let mut board = Board::from_field([
@@ -175,6 +239,27 @@ mod tests {
             [FOUR, X, X, X],
             [TWO, X, X, X],
             [FOUR, X, X, FOUR]
+        ]));
+    }
+
+    #[test]
+    fn it_should_not_add_value_if_nothing_changed_move_left() {
+        #[rustfmt::skip]
+        let mut board = Board::from_field([
+            [X, X, X, X],
+            [X, X, X, X],
+            [X, X, X, X],
+            [TWO, X, X, X]
+        ]);
+
+        move_left(&mut board, 0.0, 0.0);
+
+        #[rustfmt::skip]
+        assert_eq!(board, Board::from_field([
+            [X, X, X, X],
+            [X, X, X, X],
+            [X, X, X, X],
+            [TWO, X, X, X]
         ]));
     }
 
