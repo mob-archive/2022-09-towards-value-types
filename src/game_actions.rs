@@ -71,6 +71,18 @@ fn move_board(
     // TODO: return game_action_result (including gained_points)
 }
 
+pub fn initialize(
+    board: &mut Board,
+    random_number_value: RandomNumber,
+    random_number_position: RandomNumber,
+) {
+    board.save_representation(add_value(
+        board.get_representation(),
+        random_number_value,
+        random_number_position,
+    ));
+}
+
 #[cfg(test)]
 mod tests {
 
@@ -163,6 +175,27 @@ mod tests {
             [FOUR, X, X, X],
             [TWO, X, X, X],
             [FOUR, X, X, FOUR]
+        ]));
+    }
+
+    #[test]
+    fn it_should_initialize_the_board() {
+        #[rustfmt::skip]
+        let mut board = Board::from_field([
+            [X, X, X, X],
+            [X, X, X, X],
+            [X, X, X, X],
+            [X, X, X, X]
+        ]);
+
+        initialize(&mut board, 0.0, 0.0);
+
+        #[rustfmt::skip]
+        assert_eq!(board, Board::from_field([
+            [TWO, X, X, X],
+            [X, X, X, X],
+            [X, X, X, X],
+            [X, X, X, X]
         ]));
     }
 }

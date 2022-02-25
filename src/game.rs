@@ -1,6 +1,4 @@
 use crate::board::Board;
-use crate::board_value::BoardValue;
-use crate::coordinate::Coordinate;
 use crate::game_actions::*;
 use crate::random::random;
 
@@ -13,7 +11,7 @@ pub type ExternalFieldRepresentation = Vec<u32>;
 impl Game {
     pub fn new() -> Self {
         let mut board = Board::default();
-        board.set_value(Coordinate { row: 2, column: 0 }, BoardValue::new(2));
+        initialize(&mut board, random(), random());
         Self { board }
     }
 
@@ -92,13 +90,8 @@ mod tests {
     #[test]
     fn it_initializes_a_non_initial_field() {
         let game = Game::new();
-
         let field = game.get_field();
-
-        let expected: ExternalFieldRepresentation;
-        expected = vec![0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0];
-
-        assert_eq!(field, expected);
+        assert_eq!(count_filled_fields(field), 1);
     }
 
     // Index for the 4x4 field in a vector representation
@@ -201,5 +194,4 @@ mod tests {
             assert_eq!(count_filled_fields(field), 2);
         }
     }
-
 }
