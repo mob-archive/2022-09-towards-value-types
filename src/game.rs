@@ -7,6 +7,7 @@ pub struct Game {
 }
 
 pub type ExternalFieldRepresentation = Vec<u32>;
+pub type ExternalHighscore = u64;
 
 impl Game {
     pub fn new() -> Self {
@@ -15,7 +16,7 @@ impl Game {
         Self { board }
     }
 
-    pub fn get_score(&self) -> u64 {
+    pub fn get_score(&self) -> ExternalHighscore {
         0
     }
 

@@ -6,3 +6,4 @@ pub mod field_add_random_value;
 pub mod game_actions;
 pub mod game;
 pub mod random;
+pub mod highscore_calculator;
