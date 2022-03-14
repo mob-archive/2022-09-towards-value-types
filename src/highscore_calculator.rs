@@ -1,7 +1,15 @@
+use crate::board::Field;
 use crate::board::Row;
 use crate::board_value::BoardValue;
 
 type Highscore = u64;
+
+pub fn calculate_added_points_left(from: Field, to: Field) -> Highscore {
+    calculate_added_points_per_row_left(from[0], to[0]) + 
+    calculate_added_points_per_row_left(from[1], to[1]) + 
+    calculate_added_points_per_row_left(from[2], to[2]) + 
+    calculate_added_points_per_row_left(from[3], to[3])
+}
 
 pub fn calculate_added_points_per_row_left(from: Row, to: Row) -> Highscore {
     let mut sum: Highscore = 0;
@@ -53,6 +61,33 @@ mod tests {
     const TWO: BoardValue = BoardValue::new(2);
     const FOUR: BoardValue = BoardValue::new(4);
     const EIGHT: BoardValue = BoardValue::new(8);
+    const EMPTY_FIELD: Field = [[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]];
+
+    #[cfg(test)]
+    mod calculate_added_points_left {
+        use crate::highscore_calculator::tests::*;
+        #[test]
+        fn it_should_return_zero_if_fields_are_equal() {
+            assert_eq!(calculate_added_points_left(EMPTY_FIELD, EMPTY_FIELD), 0);
+        }
+
+        #[test]
+        fn it_should_calculate_all_rows() {
+            assert_eq!(calculate_added_points_left(
+                [
+                    [TWO,TWO,TWO,TWO],
+                    [X,X,X,X],
+                    [X,TWO,X,X],
+                    [TWO,TWO,X,X]
+                ],[
+                    [FOUR,FOUR,X,X], // 8 points
+                    [X,X,X,X], // 0 points
+                    [X,TWO,X,X], // 0 points
+                    [FOUR,X,X,X] // 4 points
+                ]), 
+                8+4);
+        }
+    }
 
     #[cfg(test)]
     mod calculate_added_points_per_row_left {
