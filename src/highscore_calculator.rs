@@ -1,14 +1,30 @@
 use crate::board::Field;
 use crate::board::Row;
 use crate::board_value::BoardValue;
+use crate::field_rotate::*;
 
 type Highscore = u64;
 
 pub fn calculate_added_points_left(from: Field, to: Field) -> Highscore {
-    calculate_added_points_per_row_left(from[0], to[0]) + 
-    calculate_added_points_per_row_left(from[1], to[1]) + 
-    calculate_added_points_per_row_left(from[2], to[2]) + 
-    calculate_added_points_per_row_left(from[3], to[3])
+    calculate_added_points_per_row_left(from[0], to[0])
+        + calculate_added_points_per_row_left(from[1], to[1])
+        + calculate_added_points_per_row_left(from[2], to[2])
+        + calculate_added_points_per_row_left(from[3], to[3])
+}
+
+pub fn calculate_added_points_up(from: Field, to: Field) -> Highscore {
+    calculate_added_points_left(rotate_counterclockwise(from), rotate_counterclockwise(to))
+}
+
+pub fn calculate_added_points_right(from: Field, to: Field) -> Highscore {
+    calculate_added_points_left(
+        rotate_clockwise(rotate_clockwise(from)),
+        rotate_clockwise(rotate_clockwise(to)),
+    )
+}
+
+pub fn calculate_added_points_down(from: Field, to: Field) -> Highscore {
+    calculate_added_points_left(rotate_clockwise(from), rotate_clockwise(to))
 }
 
 pub fn calculate_added_points_per_row_left(from: Row, to: Row) -> Highscore {
@@ -64,7 +80,98 @@ mod tests {
     const EMPTY_FIELD: Field = [[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]];
 
     #[cfg(test)]
-    mod calculate_added_points_left {
+    mod tests_calculate_added_points_down {
+        use crate::highscore_calculator::tests::*;
+        #[test]
+        fn it_should_return_zero_if_fields_are_equal() {
+            assert_eq!(calculate_added_points_down(EMPTY_FIELD, EMPTY_FIELD), 0);
+        }
+
+        #[test]
+        fn it_should_calculate_all_rows() {
+            assert_eq!(
+                calculate_added_points_down(
+                    [
+                        [TWO, TWO, X, X],
+                        [X, TWO, X, X],
+                        [X, X, X, X],
+                        [TWO, TWO, TWO, TWO]
+                    ],
+                    [
+                        [X, X, X, X],
+                        [X, X, X, X],
+                        [X, TWO, X, X],
+                        [FOUR, FOUR, TWO, TWO] // 4    4   0   0
+                    ]
+                ),
+                4 + 4
+            );
+        }
+    }
+
+    #[cfg(test)]
+    mod tests_calculate_added_points_up {
+        use crate::highscore_calculator::tests::*;
+        #[test]
+        fn it_should_return_zero_if_fields_are_equal() {
+            assert_eq!(calculate_added_points_up(EMPTY_FIELD, EMPTY_FIELD), 0);
+        }
+
+        #[test]
+        fn it_should_calculate_all_rows() {
+            assert_eq!(
+                calculate_added_points_up(
+                    [
+                        [TWO, TWO, TWO, TWO],
+                        [X, X, X, X],
+                        [X, TWO, X, X],
+                        [TWO, TWO, X, X]
+                    ],
+                    [
+                        // 4    4   0   0
+                        [FOUR, FOUR, TWO, TWO],
+                        [X, TWO, X, X],
+                        [X, X, X, X],
+                        [X, X, X, X]
+                    ]
+                ),
+                4 + 4
+            );
+        }
+    }
+
+    #[cfg(test)]
+    mod tests_calculate_added_points_right {
+        use crate::highscore_calculator::tests::*;
+        #[test]
+        fn it_should_return_zero_if_fields_are_equal() {
+            assert_eq!(calculate_added_points_right(EMPTY_FIELD, EMPTY_FIELD), 0);
+        }
+
+        #[test]
+        fn it_should_calculate_all_rows() {
+            assert_eq!(
+                calculate_added_points_right(
+                    [
+                        [TWO, TWO, TWO, TWO],
+                        [X, X, X, X],
+                        [X, TWO, X, X],
+                        [TWO, TWO, X, X]
+                    ],
+                    [
+                        [X, X, FOUR, FOUR], // 8 points
+                        [X, X, X, X],       // 0 points
+                        [X, X, X, TWO],     // 0 points
+                        [X, X, X, FOUR]     // 4 points
+                    ]
+                ),
+                8 + 4
+            );
+        }
+    }
+
+    #[cfg(test)]
+    mod tests_calculate_added_points_left {
         use crate::highscore_calculator::tests::*;
         #[test]
         fn it_should_return_zero_if_fields_are_equal() {
@@ -73,24 +180,28 @@ mod tests {
 
         #[test]
         fn it_should_calculate_all_rows() {
-            assert_eq!(calculate_added_points_left(
-                [
-                    [TWO,TWO,TWO,TWO],
-                    [X,X,X,X],
-                    [X,TWO,X,X],
-                    [TWO,TWO,X,X]
-                ],[
-                    [FOUR,FOUR,X,X], // 8 points
-                    [X,X,X,X], // 0 points
-                    [X,TWO,X,X], // 0 points
-                    [FOUR,X,X,X] // 4 points
-                ]), 
-                8+4);
+            assert_eq!(
+                calculate_added_points_left(
+                    [
+                        [TWO, TWO, TWO, TWO],
+                        [X, X, X, X],
+                        [X, TWO, X, X],
+                        [TWO, TWO, X, X]
+                    ],
+                    [
+                        [FOUR, FOUR, X, X], // 8 points
+                        [X, X, X, X],       // 0 points
+                        [TWO, X, X, X],     // 0 points
+                        [FOUR, X, X, X]     // 4 points
+                    ]
+                ),
+                8 + 4
+            );
         }
     }
 
     #[cfg(test)]
-    mod calculate_added_points_per_row_left {
+    mod tests_calculate_added_points_per_row_left {
         use crate::highscore_calculator::tests::*;
         const EMPTY_ROW: Row = [X, X, X, X];
         const ROW_WITH_TWO_LEFT: Row = [TWO, X, X, X];
