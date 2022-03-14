@@ -1,25 +1,7 @@
-use crate::board::Field;
 use crate::board::Row;
 use crate::board_value::BoardValue;
 
 type Highscore = u64;
-
-pub fn calculate_added_points(_from: Field, to: Field) -> Highscore {
-    // Assumption: Random field is not added yet
-    // list of all fields in _from
-    // list of all fields in to
-    // determine disappeard fields in _from to to
-    // Added theses values toghether
-    let mut sum: Highscore = 0;
-
-    if to[0][0] == BoardValue::new(4) || to[0][0] == BoardValue::new(8) {
-        sum = sum + to[0][0].get_value() as Highscore;
-    }
-    if to[1][0] == BoardValue::new(4) || to[1][0] == BoardValue::new(8) {
-        sum = sum + to[1][0].get_value() as Highscore;
-    }
-    sum
-}
 
 pub fn calculate_added_points_per_row_left(from: Row, to: Row) -> Highscore {
     let mut sum: Highscore = 0;
@@ -71,7 +53,6 @@ mod tests {
     const TWO: BoardValue = BoardValue::new(2);
     const FOUR: BoardValue = BoardValue::new(4);
     const EIGHT: BoardValue = BoardValue::new(8);
-    const EMPTY_FIELD: Field = [[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]];
 
     #[cfg(test)]
     mod calculate_added_points_per_row_left {
@@ -187,43 +168,5 @@ mod tests {
                 12
             );
         }
-    }
-    #[test]
-    fn it_should_return_zero_if_fields_are_equal() {
-        assert_eq!(calculate_added_points(EMPTY_FIELD, EMPTY_FIELD), 0);
-    }
-    #[test]
-    fn it_should_return_four_if_two_twos_are_merged() {
-        #[rustfmt::skip]
-        assert_eq!(calculate_added_points(
-            [
-              [TWO, TWO, X, X], 
-              [X, X, X, X],
-              [X, X, X, X],
-              [X, X, X, X]
-            ], [
-              [FOUR, X, X, X], 
-              [X, X, X, X],
-              [X, X, X, X],
-              [X, X, X, X]
-            ]
-        ), 4);
-    }
-    #[test]
-    fn it_should_return_eight_if_four_twos_are_merged() {
-        #[rustfmt::skip]
-        assert_eq!(calculate_added_points(
-            [
-              [TWO, TWO, X, X], 
-              [TWO, TWO, X, X],
-              [X, X, X, X],
-              [X, X, X, X]
-            ], [
-              [FOUR, X, X, X], 
-              [FOUR, X, X, X],
-              [X, X, X, X],
-              [X, X, X, X]
-            ]
-        ), 8);
     }
 }
