@@ -1,6 +1,7 @@
 use crate::board::Field;
 use crate::board::Row;
 use crate::board_value::BoardValue;
+use crate::field_rotate::*;
 
 pub fn move_and_merge_left(field: Field) -> Field {
     [
@@ -21,42 +22,6 @@ pub fn move_and_merge_down(field: Field) -> Field {
 
 pub fn move_and_merge_right(field: Field) -> Field {
     rotate_clockwise(move_and_merge_up(rotate_counterclockwise(field)))
-}
-
-fn rotate_counterclockwise(field: Field) -> Field {
-    [
-        extract_column_reversed(field, 3),
-        extract_column_reversed(field, 2),
-        extract_column_reversed(field, 1),
-        extract_column_reversed(field, 0)
-    ]
-}
-
-fn extract_column_reversed(field: Field, column_index: usize) -> Row {
-    [
-        field[0][column_index],
-        field[1][column_index],
-        field[2][column_index],
-        field[3][column_index],
-    ]
-}
-
-fn rotate_clockwise(field: Field) -> Field {
-    [
-        extract_column(field, 0),
-        extract_column(field, 1),
-        extract_column(field, 2),
-        extract_column(field, 3)
-    ]
-}
-
-fn extract_column(field: Field, index: usize) -> Row {
-    [
-        field[3][index],
-        field[2][index],
-        field[1][index],
-        field[0][index],
-    ]
 }
 
 fn move_and_merge_row_left(row: Row) -> Row {
@@ -146,23 +111,6 @@ mod tests {
         [X, X, X, X],
         [X, X, X, X],
     ];
-
-    #[cfg(test)]
-    mod tests_rotate_clockwise {
-        use crate::field_move_and_merge::rotate_clockwise;
-        use crate::field_move_and_merge::tests::*;
-        #[test]
-        fn it_should_rotate_empty_field() {
-            assert_eq!(rotate_clockwise(EMPTY_FIELD), EMPTY_FIELD);
-        }
-        #[test]
-        fn it_should_rotate_top_left_value_to_top_right_value() {
-            assert_eq!(
-                rotate_clockwise([[TWO, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]]),
-                [[X, X, X, TWO], [X, X, X, X], [X, X, X, X], [X, X, X, X]]
-            );
-        }
-    }
 
     #[cfg(test)]
     mod tests_move_and_merge_down {

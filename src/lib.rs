@@ -1,6 +1,7 @@
 mod board;
 mod coordinate;
 mod board_value;
+mod field_rotate;
 pub mod field_move_and_merge;
 pub mod field_add_random_value;
 pub mod game_actions;
