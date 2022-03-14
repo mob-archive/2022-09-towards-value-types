@@ -3,7 +3,7 @@ use crate::board::Row;
 use crate::board_value::BoardValue;
 use crate::field_rotate::*;
 
-type Highscore = u64;
+pub type Highscore = u64;
 
 pub fn calculate_added_points_left(from: Field, to: Field) -> Highscore {
     calculate_added_points_per_row_left(from[0], to[0])
