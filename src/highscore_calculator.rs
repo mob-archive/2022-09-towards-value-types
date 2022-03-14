@@ -22,32 +22,32 @@ pub fn calculate_added_points(_from: Field, to: Field) -> Highscore {
 }
 
 pub fn calculate_added_points_per_row_left(from: Row, to: Row) -> Highscore {
-    if has_same_values(from, to) {
-        return 0;
-    }
     let mut sum: Highscore = 0;
-    let mut index = 0;
-    if from[index] != to[index] {
-        sum += to[index].get_value() as Highscore
-    }
-    index += 1;
-    if from[index] != to[index] {
-        sum += to[index].get_value() as Highscore
-    }
-    index += 1;
-    if from[index] != to[index] {
-        sum += to[index].get_value() as Highscore
+    for merged_value in get_merged_values(from, to).iter() {
+        sum += merged_value.get_value() as Highscore
     }
     sum
 }
 
-pub fn has_same_values(from: Row, to: Row) -> bool {
-    let from_vector: Vec<BoardValue> = get_vector_without_zeros(from);
-    let to_vector: Vec<BoardValue> = get_vector_without_zeros(to);
-    from_vector == to_vector
+fn get_merged_values(from: Row, to: Row) -> Vec<BoardValue> {
+    let from_vector = get_vector_without_zeros_sorted_descending(from);
+    let to_vector = get_vector_without_zeros_sorted_descending(to);
+
+    let mut from_iterator = from_vector.iter();
+
+    let mut merged_values: Vec<BoardValue> = Vec::new();
+    for current_to in to_vector.iter() {
+        let current_from = from_iterator.next();
+        if current_from.unwrap() == current_to {
+            continue;
+        }
+        from_iterator.next();
+        merged_values.push(*current_to);
+    }
+    merged_values
 }
 
-fn get_vector_without_zeros(row: Row) -> Vec<BoardValue>{
+fn get_vector_without_zeros(row: Row) -> Vec<BoardValue> {
     let mut result_vector: Vec<BoardValue> = Vec::new();
     for index in 0..4 {
         if row[index] != BoardValue::new(0) {
@@ -55,6 +55,12 @@ fn get_vector_without_zeros(row: Row) -> Vec<BoardValue>{
         }
     }
     result_vector
+}
+
+fn get_vector_without_zeros_sorted_descending(row: Row) -> Vec<BoardValue> {
+    let mut values = get_vector_without_zeros(row);
+    values.sort_by(|a, b| b.cmp(a));
+    values
 }
 
 #[cfg(test)]
@@ -68,44 +74,10 @@ mod tests {
     const EMPTY_FIELD: Field = [[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]];
 
     #[cfg(test)]
-    mod has_same_values {
-        use crate::highscore_calculator::tests::*;
-        #[test]
-        fn it_should_return_true_if_tripplet_is_moved_from_right_to_left() {
-            assert_eq!(
-                has_same_values([X, TWO, FOUR, EIGHT], [TWO, FOUR, EIGHT, X]),
-                true
-            );
-            assert_eq!(
-                has_same_values([TWO, FOUR, X, EIGHT], [TWO, FOUR, EIGHT, X]),
-                true
-            );
-            assert_eq!(
-                has_same_values([TWO, X, X, EIGHT], [TWO, EIGHT, X, X]),
-                true
-            );
-        }
-        #[test]
-        fn it_should_return_false_if_two_twos_were_merged() {
-            assert_eq!(
-                has_same_values([TWO, TWO, X, X], [FOUR, X, X, X]),
-                false
-            );
-        }
-
-        #[test]
-        fn it_should_return_false_if_two_fours_were_merged() {
-            assert_eq!(
-                has_same_values([FOUR, FOUR, X, X], [EIGHT, X, X, X]),
-                false
-            );
-        }
-    }
-    #[cfg(test)]
     mod calculate_added_points_per_row_left {
         use crate::highscore_calculator::tests::*;
         const EMPTY_ROW: Row = [X, X, X, X];
-        const ROW_WITH_TWO_LEFT: Row = [X, X, X, X];
+        const ROW_WITH_TWO_LEFT: Row = [TWO, X, X, X];
         #[test]
         fn it_should_return_zero_if_rows_are_equal() {
             assert_eq!(calculate_added_points_per_row_left(EMPTY_ROW, EMPTY_ROW), 0);
@@ -192,13 +164,29 @@ mod tests {
             );
         }
 
-        // #[test]
-        // fn it_should_return_four_if_two_twos_are_merged_and_one_four_is_moved() {
-        //     assert_eq!(
-        //         calculate_added_points_per_row_left([X, TWO, TWO, FOUR], [FOUR, FOUR, X, X]),
-        //         4
-        //     );
-        // }
+        #[test]
+        fn it_should_return_four_if_two_twos_are_merged_and_one_four_is_moved() {
+            assert_eq!(
+                calculate_added_points_per_row_left([X, TWO, TWO, FOUR], [FOUR, FOUR, X, X]),
+                4
+            );
+        }
+
+        #[test]
+        fn it_should_return_four_if_two_fours_are_merged_and_two_twos_are_moved() {
+            assert_eq!(
+                calculate_added_points_per_row_left([TWO, FOUR, FOUR, TWO], [TWO, EIGHT, TWO, X]),
+                8
+            );
+        }
+
+        #[test]
+        fn it_should_return_four_if_two_fours_and_two_twos_are_merged() {
+            assert_eq!(
+                calculate_added_points_per_row_left([FOUR, FOUR, TWO, TWO], [EIGHT, FOUR, X, X]),
+                12
+            );
+        }
     }
     #[test]
     fn it_should_return_zero_if_fields_are_equal() {

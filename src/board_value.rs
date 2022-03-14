@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(Clone, Copy, Eq, PartialEq)]
+#[derive(Clone, Copy, Eq, PartialEq, PartialOrd, Ord)]
 pub struct BoardValue {
     value: u32,
 }
