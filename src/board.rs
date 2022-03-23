@@ -31,12 +31,6 @@ impl Board {
         }
     }
 
-    pub fn from_field(field: Field) -> Self {
-        let mut b = Board::default();
-        b.save_representation(field);
-        b
-    }
-
     pub fn has_value(&self, coordinate: Coordinate) -> bool {
         self.cells.get(&coordinate).is_some()
     }
@@ -102,8 +96,11 @@ mod tests {
     const V: BoardValue = BoardValue::new(0);
     const VALUE_2: BoardValue = BoardValue::new(2);
     const VALUE_4: BoardValue = BoardValue::new(4);
+    
     fn create_board_with(field: Field) -> Board {
-        Board::from_field(field)
+        let mut b = Board::default();
+        b.save_representation(field);
+        b
     }
     fn create_board_with_first_coordinate(value: BoardValue) -> Board {
         let mut b = Board::default();
@@ -256,7 +253,7 @@ mod tests {
             expected_board.set_value(Coordinate { column: 0, row: 3 }, VALUE_2);
             expected_board.set_value(Coordinate { column: 3, row: 3 }, VALUE_4);
 
-            let board = Board::from_field([
+            let board = create_board_with([
                 [V, V, V, V],
                 [V, V, V, V],
                 [V, V, V, V],

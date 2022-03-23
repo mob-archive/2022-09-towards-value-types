@@ -1,4 +1,3 @@
-use crate::board::Board;
 use crate::board::Field;
 use crate::field_add_random_value::add_value;
 use crate::field_move_and_merge::*;
@@ -10,20 +9,8 @@ pub fn move_field_down(
     random_number_value: RandomNumber,
     random_number_position: RandomNumber,
 ) -> (Field, Highscore) {
-    let mut board = Board::new();
-    board.save_representation(field);
-    let score = move_down(&mut board, random_number_value, random_number_position);
-    board.get_representation();
-    (board.get_representation(), score)
-}
-
-pub fn move_down(
-    board: &mut Board,
-    random_number_value: RandomNumber,
-    random_number_position: RandomNumber,
-) -> Highscore {
-    move_board(
-        board,
+    move_field(
+        field,
         move_and_merge_down,
         calculate_added_points_down,
         random_number_value,
@@ -36,20 +23,8 @@ pub fn move_field_right(
     random_number_value: RandomNumber,
     random_number_position: RandomNumber,
 ) -> (Field, Highscore) {
-    let mut board = Board::new();
-    board.save_representation(field);
-    let score = move_right(&mut board, random_number_value, random_number_position);
-    board.get_representation();
-    (board.get_representation(), score)
-}
-
-pub fn move_right(
-    board: &mut Board,
-    random_number_value: RandomNumber,
-    random_number_position: RandomNumber,
-) -> Highscore {
-    move_board(
-        board,
+    move_field(
+        field,
         move_and_merge_right,
         calculate_added_points_right,
         random_number_value,
@@ -62,20 +37,8 @@ pub fn move_field_up(
     random_number_value: RandomNumber,
     random_number_position: RandomNumber,
 ) -> (Field, Highscore) {
-    let mut board = Board::new();
-    board.save_representation(field);
-    let score = move_up(&mut board, random_number_value, random_number_position);
-    board.get_representation();
-    (board.get_representation(), score)
-}
-
-pub fn move_up(
-    board: &mut Board,
-    random_number_value: RandomNumber,
-    random_number_position: RandomNumber,
-) -> Highscore {
-    move_board(
-        board,
+    move_field(
+        field,
         move_and_merge_up,
         calculate_added_points_up,
         random_number_value,
@@ -88,20 +51,8 @@ pub fn move_field_left(
     random_number_value: RandomNumber,
     random_number_position: RandomNumber,
 ) -> (Field, Highscore) {
-    let mut board = Board::new();
-    board.save_representation(field);
-    let score = move_left(&mut board, random_number_value, random_number_position);
-    board.get_representation();
-    (board.get_representation(), score)
-}
-
-pub fn move_left(
-    board: &mut Board,
-    random_number_value: RandomNumber,
-    random_number_position: RandomNumber,
-) -> Highscore {
-    move_board(
-        board,
+    move_field(
+        field,
         move_and_merge_left,
         calculate_added_points_left,
         random_number_value,
@@ -109,40 +60,33 @@ pub fn move_left(
     )
 }
 
-fn move_board(
-    board: &mut Board,
+fn move_field(
+    field: Field,
     move_and_merge_operation: fn(Field) -> Field,
     highscore_calculate_function: fn(Field, Field) -> Highscore,
     random_number_value: RandomNumber,
     random_number_position: RandomNumber,
-) -> Highscore {
-    let old_field = board.get_representation();
-    let mut moved = move_and_merge_operation(old_field);
-    let gained_points = highscore_calculate_function(old_field, moved);
-    if old_field != moved {
+) -> (Field, Highscore) {
+    let mut moved = move_and_merge_operation(field);
+    let gained_points = highscore_calculate_function(field, moved);
+    if field != moved {
         moved = add_value(moved, random_number_value, random_number_position);
     }
-    board.save_representation(moved);
-    gained_points
+    (moved, gained_points)
 }
 
-pub fn initialize(
-    board: &mut Board,
+pub fn initialize_field(
+    field: Field,
     random_number_value: RandomNumber,
     random_number_position: RandomNumber,
-) {
-    board.save_representation(add_value(
-        board.get_representation(),
-        random_number_value,
-        random_number_position,
-    ));
+) -> Field {
+    add_value(field, random_number_value, random_number_position)
 }
 
 #[cfg(test)]
 mod tests {
 
     use crate::board_value::BoardValue;
-    use crate::game_actions::Board;
     use crate::game_actions::*;
 
     const X: BoardValue = BoardValue::new(0);
@@ -394,20 +338,20 @@ mod tests {
         #[test]
         fn it_should_initialize_the_board() {
             #[rustfmt::skip]
-            let mut board = Board::from_field([
+            let source_field = [
                 [X, X, X, X],
                 [X, X, X, X],
                 [X, X, X, X],
                 [X, X, X, X]
-            ]);
-            initialize(&mut board, 0.0, 0.0);
+            ];
+            let new_field = initialize_field(source_field, 0.0, 0.0);
             #[rustfmt::skip]
-            assert_eq!(board, Board::from_field([
+            assert_eq!(new_field, [
                 [TWO, X, X, X],
                 [X, X, X, X],
                 [X, X, X, X],
                 [X, X, X, X]
-            ]));
+            ]);
         }
     }
 }

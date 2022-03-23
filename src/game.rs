@@ -15,7 +15,8 @@ pub type ExternalHighscore = u64;
 impl Game {
     pub fn new() -> Self {
         let mut board = Board::default();
-        initialize(&mut board, random(), random());
+        let initialized_field = initialize_field(board.get_representation(), random(), random());
+        board.save_representation(initialized_field);
         Self { board, score: 0 }
     }
 
@@ -47,19 +48,27 @@ impl Game {
     }
 
     pub fn move_down(&mut self) {
-        self.score += move_down(&mut self.board, random(), random());
+        let (field, score) = move_field_down(self.board.get_representation(), random(), random());
+        self.board.save_representation(field);
+        self.score += score;
     }
 
     pub fn move_right(&mut self) {
-        self.score += move_right(&mut self.board, random(), random());
+        let (field, score) = move_field_right(self.board.get_representation(), random(), random());
+        self.board.save_representation(field);
+        self.score += score;
     }
 
     pub fn move_up(&mut self) {
-        self.score += move_up(&mut self.board, random(), random());
+        let (field, score) = move_field_up(self.board.get_representation(), random(), random());
+        self.board.save_representation(field);
+        self.score += score;
     }
 
     pub fn move_left(&mut self) {
-        self.score += move_left(&mut self.board, random(), random());
+        let (field, score) = move_field_left(self.board.get_representation(), random(), random());
+        self.board.save_representation(field);
+        self.score += score;
     }
 }
 
