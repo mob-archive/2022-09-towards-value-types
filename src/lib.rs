@@ -1,10 +1,11 @@
-mod field;
-mod coordinate;
-mod board_value;
-mod field_rotate;
-pub mod field_move_and_merge;
-pub mod field_add_random_value;
-pub mod game_actions;
 pub mod game;
-pub mod random;
-pub mod highscore_calculator;
+
+mod board_value;
+mod coordinate;
+mod field;
+mod field_add_random_value;
+mod field_move_and_merge;
+mod field_rotate;
+mod game_actions;
+mod highscore_calculator;
+mod random;
