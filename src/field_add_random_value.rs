@@ -1,7 +1,8 @@
 use crate::field::Field;
 use crate::board_value::BoardValue;
-use crate::coordinate::Coordinate;
 use crate::random::RandomNumber;
+
+type Coordinate = (usize, usize);
 
 pub fn add_value(
     field: Field,
@@ -10,8 +11,8 @@ pub fn add_value(
 ) -> Field {
     let mut new_field = field;
     let new_board_value = get_new_board_value(random_number_value);
-    let coordinate = get_coordinate(field, random_number_position);
-    new_field[coordinate.row as usize][coordinate.column as usize] = new_board_value;
+    let (row, column) = get_coordinate(field, random_number_position);
+    new_field[row][column] = new_board_value;
     new_field
 }
 
@@ -33,10 +34,10 @@ fn get_index_for_coordinate(random_number: RandomNumber, free_coordinate_count: 
 fn get_coordinates_of_empty_cells(field: Field) -> Vec<Coordinate> {
     const X: BoardValue = BoardValue::new(0);
     let mut vec: Vec<Coordinate> = Vec::new();
-    for row in 0..4 as u8 {
-        for column in 0..4 as u8 {
-            if field[row as usize][column as usize] == X {
-                vec.push(Coordinate { row, column })
+    for row in 0..4 {
+        for column in 0..4 {
+            if field[row][column] == X {
+                vec.push((row, column))
             }
         }
     }

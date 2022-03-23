@@ -1,7 +1,6 @@
 pub mod game;
 
 mod board_value;
-mod coordinate;
 mod field;
 mod field_add_random_value;
 mod field_move_and_merge;
