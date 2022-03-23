@@ -5,6 +5,18 @@ use crate::field_move_and_merge::*;
 use crate::highscore_calculator::*;
 use crate::random::RandomNumber;
 
+pub fn move_field_down(
+    field: Field,
+    random_number_value: RandomNumber,
+    random_number_position: RandomNumber,
+) -> (Field, Highscore) {
+    let mut board = Board::new();
+    board.save_representation(field);
+    let score = move_down(&mut board, random_number_value, random_number_position);
+    board.get_representation();
+    (board.get_representation(), score)
+}
+
 pub fn move_down(
     board: &mut Board,
     random_number_value: RandomNumber,
@@ -17,6 +29,18 @@ pub fn move_down(
         random_number_value,
         random_number_position,
     )
+}
+
+pub fn move_field_right(
+    field: Field,
+    random_number_value: RandomNumber,
+    random_number_position: RandomNumber,
+) -> (Field, Highscore) {
+    let mut board = Board::new();
+    board.save_representation(field);
+    let score = move_right(&mut board, random_number_value, random_number_position);
+    board.get_representation();
+    (board.get_representation(), score)
 }
 
 pub fn move_right(
@@ -33,6 +57,18 @@ pub fn move_right(
     )
 }
 
+pub fn move_field_up(
+    field: Field,
+    random_number_value: RandomNumber,
+    random_number_position: RandomNumber,
+) -> (Field, Highscore) {
+    let mut board = Board::new();
+    board.save_representation(field);
+    let score = move_up(&mut board, random_number_value, random_number_position);
+    board.get_representation();
+    (board.get_representation(), score)
+}
+
 pub fn move_up(
     board: &mut Board,
     random_number_value: RandomNumber,
@@ -45,6 +81,18 @@ pub fn move_up(
         random_number_value,
         random_number_position,
     )
+}
+
+pub fn move_field_left(
+    field: Field,
+    random_number_value: RandomNumber,
+    random_number_position: RandomNumber,
+) -> (Field, Highscore) {
+    let mut board = Board::new();
+    board.save_representation(field);
+    let score = move_left(&mut board, random_number_value, random_number_position);
+    board.get_representation();
+    (board.get_representation(), score)
 }
 
 pub fn move_left(
@@ -100,217 +148,240 @@ mod tests {
     const X: BoardValue = BoardValue::new(0);
     const TWO: BoardValue = BoardValue::new(2);
     const FOUR: BoardValue = BoardValue::new(4);
-
     #[cfg(test)]
-    mod tests_move_down {
+    mod move_field_down {
         use crate::game_actions::tests::*;
         #[test]
         fn it_should_perform_the_action() {
             #[rustfmt::skip]
-            let mut board = Board::from_field([
+            let source_field = [
                 [TWO, TWO, X, TWO],
                 [TWO, X, X, TWO],
                 [X, X, X, TWO],
                 [X, X, TWO, TWO]
-            ]);
-            move_down(&mut board, 0.0, 0.0);
+            ];
+            let (new_field, _) = move_field_down(source_field, 0.0, 0.0);
+
             #[rustfmt::skip]
-            assert_eq!(board, Board::from_field([
+            assert_eq!(new_field, [
                 [TWO, X, X, X],
                 [X, X, X, X],
                 [X, X, X, FOUR],
                 [FOUR, TWO, TWO, FOUR]
-            ]));
+            ]);
         }
+
         #[test]
         fn it_should_not_add_value_if_nothing_changed() {
             #[rustfmt::skip]
-            let mut board = Board::from_field([
+            let source_field = [
+                [X, X, X, X],
+                [X, X, X, X],
+                [X, X, X, X],
+                [TWO, X, X, X]
+            ];
+            let (new_field, _) = move_field_down(source_field, 0.0, 0.0);
+            #[rustfmt::skip]
+            assert_eq!(new_field, [
                 [X, X, X, X],
                 [X, X, X, X],
                 [X, X, X, X],
                 [TWO, X, X, X]
             ]);
-            move_down(&mut board, 0.0, 0.0);
-            #[rustfmt::skip]
-            assert_eq!(board, Board::from_field([
-                [X, X, X, X],
-                [X, X, X, X],
-                [X, X, X, X],
-                [TWO, X, X, X]
-            ]));
         }
+
         #[test]
         fn it_should_return_added_points() {
             #[rustfmt::skip]
-            let mut board = Board::from_field([
+            let source_field = [
                 [X, X, X, X],
                 [X, X, X, X],
                 [TWO, X, X, X],
                 [TWO, X, X, X]
-            ]);
-            let actual_added_points = move_down(&mut board, 0.0, 0.0);
+            ];
+            let (_, actual_added_points) = move_field_down(source_field, 0.0, 0.0);
             assert_eq!(actual_added_points, 4);
         }
     }
 
     #[cfg(test)]
-    mod tests_move_right {
+    mod move_field_right {
         use crate::game_actions::tests::*;
         #[test]
         fn it_should_perform_the_action() {
             #[rustfmt::skip]
-            let mut board = Board::from_field([
+            let source_field = [
                 [TWO, TWO, X, TWO],
                 [TWO, X, X, TWO],
                 [X, X, X, TWO],
                 [X, X, TWO, TWO]
-            ]);
+            ];
 
-            move_right(&mut board, 0.0, 0.0);
+            let (new_field, _) = move_field_right(source_field, 0.0, 0.0);
 
             #[rustfmt::skip]
-            assert_eq!(board, Board::from_field([
+            assert_eq!(new_field, [
                 [TWO, X, TWO, FOUR],
                 [X, X, X, FOUR],
                 [X, X, X, TWO],
                 [X, X, X, FOUR]
-            ]));
+            ]);
         }
 
         #[test]
         fn it_should_not_add_value_if_nothing_changed() {
             #[rustfmt::skip]
-            let mut board = Board::from_field([
+            let source_field = [
+                [X, X, X, TWO],
+                [X, X, X, X],
+                [X, X, X, X],
+                [X, X, X, X]
+            ];
+
+            let (new_field, _) = move_field_right(source_field, 0.0, 0.0);
+
+            #[rustfmt::skip]
+            assert_eq!(new_field, [
                 [X, X, X, TWO],
                 [X, X, X, X],
                 [X, X, X, X],
                 [X, X, X, X]
             ]);
-
-            move_right(&mut board, 0.0, 0.0);
-
-            #[rustfmt::skip]
-            assert_eq!(board, Board::from_field([
-                [X, X, X, TWO],
-                [X, X, X, X],
-                [X, X, X, X],
-                [X, X, X, X]
-            ]));
         }
 
         #[test]
         fn it_should_return_added_points() {
             #[rustfmt::skip]
-            let mut board = Board::from_field([
+            let source_field = [
                 [X, X, TWO, TWO],
                 [X, X, X, X],
                 [X, TWO, TWO, X],
                 [X, X, X, X]
-            ]);
+            ];
 
-            let actual_added_points = move_right(&mut board, 0.0, 0.0);
+            let (_, actual_added_points) = move_field_right(source_field, 0.0, 0.0);
             assert_eq!(actual_added_points, 8);
         }
     }
 
     #[cfg(test)]
-    mod tests_move_up {
+    mod move_field_up {
         use crate::game_actions::tests::*;
 
         #[test]
         fn it_should_perform_the_action() {
             #[rustfmt::skip]
-            let mut board = Board::from_field([
+            let source_field = [
                 [TWO, TWO, X, TWO],
                 [TWO, X, X, TWO],
                 [X, X, X, TWO],
                 [X, X, TWO, TWO]
-            ]);
+            ];
 
-            move_up(&mut board, 0.0, 0.0);
+            let (new_field, _) = move_field_up(source_field, 0.0, 0.0);
 
             #[rustfmt::skip]
-            assert_eq!(board, Board::from_field([
+            assert_eq!(new_field, [
                 [FOUR, TWO , TWO, FOUR],
                 [TWO, X, X, FOUR],
                 [X, X, X, X],
                 [X, X, X, X]
-            ]));
+            ]);
         }
 
         #[test]
         fn it_should_not_add_value_if_nothing_changed() {
             #[rustfmt::skip]
-            let mut board = Board::from_field([
+            let source_field= [
+                [TWO, X, X, X],
+                [X, X, X, X],
+                [X, X, X, X],
+                [X, X, X, X]
+            ];
+
+            let (new_field, _) = move_field_up(source_field, 0.0, 0.0);
+
+            #[rustfmt::skip]
+            assert_eq!(new_field, [
+                [TWO, X, X, X],
+                [X, X, X, X],
+                [X, X, X, X],
+                [X, X, X, X]
+            ]);
+        }
+
+        #[test]
+        fn it_should_return_added_points() {
+            #[rustfmt::skip]
+            let source_field = [
                 [TWO, X, X, FOUR],
                 [TWO, X, X, FOUR],
                 [X, X, X, X],
                 [X, X, X, X]
-            ]);
+            ];
 
-            let actual_added_points = move_up(&mut board, 0.0, 0.0);
+            let (_, actual_added_points) = move_field_up(source_field, 0.0, 0.0);
 
             assert_eq!(actual_added_points, 12);
         }
     }
 
     #[cfg(test)]
-    mod tests_move_left {
+    mod move_field_left {
         use crate::game_actions::tests::*;
         #[test]
         fn it_should_perform_the_action() {
             #[rustfmt::skip]
-            let mut board = Board::from_field([
+            let source_field = [
                 [TWO, TWO, X, TWO],
                 [TWO, X, X, TWO],
                 [X, X, X, TWO],
                 [X, X, TWO, TWO]
-            ]);
+            ];
 
-            move_left(&mut board, 0.99, 0.99);
+            let (new_field, _) = move_field_left(source_field, 0.99, 0.99);
 
             #[rustfmt::skip]
-            assert_eq!(board, Board::from_field([
+            assert_eq!(new_field, [
                 [FOUR, TWO, X, X],
                 [FOUR, X, X, X],
                 [TWO, X, X, X],
                 [FOUR, X, X, FOUR]
-            ]));
+            ]);
         }
 
         #[test]
         fn it_should_not_add_value_if_nothing_changed() {
             #[rustfmt::skip]
-            let mut board = Board::from_field([
+            let source_field= [
+                [X, X, X, X],
+                [X, X, X, X],
+                [X, X, X, X],
+                [TWO, X, X, X]
+            ];
+
+            let (new_field, _) = move_field_left(source_field, 0.0, 0.0);
+
+            #[rustfmt::skip]
+            assert_eq!(new_field, [
                 [X, X, X, X],
                 [X, X, X, X],
                 [X, X, X, X],
                 [TWO, X, X, X]
             ]);
-
-            move_left(&mut board, 0.0, 0.0);
-
-            #[rustfmt::skip]
-            assert_eq!(board, Board::from_field([
-                [X, X, X, X],
-                [X, X, X, X],
-                [X, X, X, X],
-                [TWO, X, X, X]
-            ]));
         }
 
         #[test]
         fn it_should_return_added_points() {
             #[rustfmt::skip]
-            let mut board = Board::from_field([
+            let source_field = [
                 [X, FOUR, FOUR, X],
                 [X, X, X, X],
                 [X, X, X, X],
                 [TWO, TWO, TWO, TWO]
-            ]);
+            ];
 
-            let actual_added_points = move_left(&mut board, 0.0, 0.0);
+            let (_, actual_added_points) = move_field_left(source_field, 0.0, 0.0);
 
             assert_eq!(actual_added_points, 16);
         }
