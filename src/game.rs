@@ -1,9 +1,12 @@
 use crate::board::Board;
+use crate::board::Field;
 use crate::game_actions::*;
+use crate::highscore_calculator::Highscore;
 use crate::random::random;
 
 pub struct Game {
     board: Board,
+    score: Highscore,
 }
 
 pub type ExternalFieldRepresentation = Vec<u32>;
@@ -13,11 +16,17 @@ impl Game {
     pub fn new() -> Self {
         let mut board = Board::default();
         initialize(&mut board, random(), random());
-        Self { board }
+        Self { board, score: 0 }
+    }
+
+    pub fn from_field(field: Field) -> Self {
+        let mut board = Board::default();
+        board.save_representation(field);
+        Self { board, score: 0 }
     }
 
     pub fn get_score(&self) -> ExternalHighscore {
-        0
+        self.score
     }
 
     pub fn get_field(&self) -> ExternalFieldRepresentation {
@@ -38,19 +47,19 @@ impl Game {
     }
 
     pub fn move_down(&mut self) {
-        move_down(&mut self.board, random(), random());
+        self.score += move_down(&mut self.board, random(), random());
     }
 
     pub fn move_right(&mut self) {
-        move_right(&mut self.board, random(), random());
+        self.score += move_right(&mut self.board, random(), random());
     }
 
     pub fn move_up(&mut self) {
-        move_up(&mut self.board, random(), random());
+        self.score += move_up(&mut self.board, random(), random());
     }
 
     pub fn move_left(&mut self) {
-        move_left(&mut self.board, random(), random());
+        self.score += move_left(&mut self.board, random(), random());
     }
 }
 
@@ -63,6 +72,7 @@ impl Default for Game {
 #[cfg(test)]
 mod tests {
 
+    use crate::board_value::BoardValue;
     use crate::game::ExternalFieldRepresentation;
     use crate::game::Game;
 
@@ -114,6 +124,27 @@ mod tests {
 
         assert!(count_filled_fields(game.get_field()) > 1);
     }
+    const X: BoardValue = BoardValue::new(0);
+    const TWO: BoardValue = BoardValue::new(2);
+
+    #[cfg(test)]
+    mod from_field {
+        use crate::board::Field;
+        use crate::game::tests::*;
+
+        #[test]
+        fn it_should_initialize_game_with_given_field() {
+            const NON_EMPTY_FIELD: Field =
+                [[TWO, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]];
+            let game = Game::from_field(NON_EMPTY_FIELD);
+
+            assert_eq!(
+                game.get_field(),
+                [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            );
+            assert_eq!(game.get_score(), 0);
+        }
+    }
 
     // Index for the 4x4 field in a vector representation
     // 0, 1, 2, 3
@@ -133,6 +164,15 @@ mod tests {
             let field = game.get_field();
             let sum_of_values_in_last_row = field[12] + field[13] + field[14] + field[15];
             assert_ne!(sum_of_values_in_last_row, 0);
+            assert_eq!(game.get_score(), 0);
+        }
+
+        #[test]
+        fn it_should_add_4_to_score_after_merge() {
+            let mut game =
+                Game::from_field([[X, X, X, X], [X, X, X, X], [TWO, X, X, X], [TWO, X, X, X]]);
+            game.move_down();
+            assert_eq!(game.get_score(), 4);
         }
     }
 
@@ -148,6 +188,15 @@ mod tests {
             let field = game.get_field();
             let sum_of_values_in_last_row = field[3] + field[7] + field[11] + field[15];
             assert_ne!(sum_of_values_in_last_row, 0);
+            assert_eq!(game.get_score(), 0);
+        }
+
+        #[test]
+        fn it_should_add_4_to_score_after_merge() {
+            let mut game =
+                Game::from_field([[X, X, X, X], [X, X, X, X], [TWO, TWO, X, X], [X, X, X, X]]);
+            game.move_right();
+            assert_eq!(game.get_score(), 4);
         }
     }
     #[cfg(test)]
@@ -162,6 +211,15 @@ mod tests {
             let field = game.get_field();
             let sum_of_values_in_last_row = field[0] + field[1] + field[2] + field[3];
             assert_ne!(sum_of_values_in_last_row, 0);
+            assert_eq!(game.get_score(), 0);
+        }
+
+        #[test]
+        fn it_should_add_4_to_score_after_merge() {
+            let mut game =
+                Game::from_field([[X, X, X, X], [X, X, X, X], [TWO, X, X, X], [TWO, X, X, X]]);
+            game.move_up();
+            assert_eq!(game.get_score(), 4);
         }
     }
 
@@ -177,6 +235,15 @@ mod tests {
             let field = game.get_field();
             let sum_of_values_in_last_row = field[0] + field[4] + field[8] + field[12];
             assert_ne!(sum_of_values_in_last_row, 0);
+            assert_eq!(game.get_score(), 0);
+        }
+
+        #[test]
+        fn it_should_add_4_to_score_after_merge() {
+            let mut game =
+                Game::from_field([[X, X, X, X], [X, X, X, X], [TWO, TWO, X, X], [X, X, X, X]]);
+            game.move_left();
+            assert_eq!(game.get_score(), 4);
         }
     }
 }
