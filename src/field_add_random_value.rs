@@ -1,4 +1,4 @@
-use crate::board::Field;
+use crate::field::Field;
 use crate::board_value::BoardValue;
 use crate::coordinate::Coordinate;
 use crate::random::RandomNumber;

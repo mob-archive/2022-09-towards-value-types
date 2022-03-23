@@ -1,4 +1,4 @@
-use crate::board::Field;
+use crate::field::Field;
 use crate::field_add_random_value::add_value;
 use crate::field_move_and_merge::*;
 use crate::highscore_calculator::*;

@@ -1,11 +1,11 @@
-use crate::board::Board;
-use crate::board::Field;
+use crate::field::Field;
+use crate::board_value::BoardValue;
 use crate::game_actions::*;
 use crate::highscore_calculator::Highscore;
 use crate::random::random;
 
 pub struct Game {
-    board: Board,
+    field: Field,
     score: Highscore,
 }
 
@@ -14,16 +14,17 @@ pub type ExternalHighscore = u64;
 
 impl Game {
     pub fn new() -> Self {
-        let mut board = Board::default();
-        let initialized_field = initialize_field(board.get_representation(), random(), random());
-        board.save_representation(initialized_field);
-        Self { board, score: 0 }
+        const X: BoardValue = BoardValue::new(0);
+        const EMPTY_FIELD: Field = [[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]];
+        let initialized_field = initialize_field(EMPTY_FIELD, random(), random());
+        Self {
+            field: initialized_field,
+            score: 0,
+        }
     }
 
     pub fn from_field(field: Field) -> Self {
-        let mut board = Board::default();
-        board.save_representation(field);
-        Self { board, score: 0 }
+        Self { field, score: 0 }
     }
 
     pub fn get_score(&self) -> ExternalHighscore {
@@ -31,7 +32,7 @@ impl Game {
     }
 
     pub fn get_field(&self) -> ExternalFieldRepresentation {
-        let field_iter = self.board.get_representation().into_iter();
+        let field_iter = self.field.into_iter();
         // Rust Vector<->Array madness solved with help from
         // https://stackoverflow.com/a/63355120 (and comments)
         field_iter
@@ -48,26 +49,26 @@ impl Game {
     }
 
     pub fn move_down(&mut self) {
-        let (field, score) = move_field_down(self.board.get_representation(), random(), random());
-        self.board.save_representation(field);
+        let (field, score) = move_field_down(self.field, random(), random());
+        self.field = field;
         self.score += score;
     }
 
     pub fn move_right(&mut self) {
-        let (field, score) = move_field_right(self.board.get_representation(), random(), random());
-        self.board.save_representation(field);
+        let (field, score) = move_field_right(self.field, random(), random());
+        self.field = field;
         self.score += score;
     }
 
     pub fn move_up(&mut self) {
-        let (field, score) = move_field_up(self.board.get_representation(), random(), random());
-        self.board.save_representation(field);
+        let (field, score) = move_field_up(self.field, random(), random());
+        self.field = field;
         self.score += score;
     }
 
     pub fn move_left(&mut self) {
-        let (field, score) = move_field_left(self.board.get_representation(), random(), random());
-        self.board.save_representation(field);
+        let (field, score) = move_field_left(self.field, random(), random());
+        self.field = field;
         self.score += score;
     }
 }
@@ -138,7 +139,7 @@ mod tests {
 
     #[cfg(test)]
     mod from_field {
-        use crate::board::Field;
+        use crate::field::Field;
         use crate::game::tests::*;
 
         #[test]

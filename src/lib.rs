@@ -1,4 +1,4 @@
-mod board;
+mod field;
 mod coordinate;
 mod board_value;
 mod field_rotate;

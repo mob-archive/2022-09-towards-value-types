@@ -1,5 +1,5 @@
-use crate::board::Field;
-use crate::board::Row;
+use crate::field::Row;
+use crate::field::Field;
 use crate::board_value::BoardValue;
 use crate::field_rotate::*;
 

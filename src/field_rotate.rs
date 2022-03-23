@@ -1,5 +1,5 @@
-use crate::board::Field;
-use crate::board::Row;
+use crate::field::Field;
+use crate::field::Row;
 
 pub fn rotate_counterclockwise(field: Field) -> Field {
     [
