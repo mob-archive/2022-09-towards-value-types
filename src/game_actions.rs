@@ -68,11 +68,11 @@ fn move_field(
     random_number_position: RandomNumber,
 ) -> (Field, Highscore) {
     let mut moved = move_and_merge_operation(field);
-    let gained_points = highscore_calculate_function(field, moved);
+    let added_points = highscore_calculate_function(field, moved);
     if field != moved {
         moved = add_value(moved, random_number_value, random_number_position);
     }
-    (moved, gained_points)
+    (moved, added_points)
 }
 
 pub fn initialize_field(
