@@ -32,12 +32,8 @@ fn get_all_cell_neighbours(field: Field) -> Vec<(BoardValue, BoardValue)> {
 
 #[cfg(test)]
 mod test {
+    use crate::field::tests::*;
     use crate::field_gameover::*;
-
-    const X: BoardValue = BoardValue::new(0);
-    const TWO: BoardValue = BoardValue::new(2);
-    const FOUR: BoardValue = BoardValue::new(4);
-    const EIGHT: BoardValue = BoardValue::new(8);
 
     #[test]
     fn it_should_return_all_touples_in_an_full_field() {
@@ -130,8 +126,8 @@ mod test {
 
     #[test]
     fn it_should_return_false_if_field_can_be_merged_right_by_same_value_instances() {
-        const EIGHT_ONE:BoardValue = BoardValue::new(8);
-        const EIGHT_TWO:BoardValue = BoardValue::new(8);
+        const EIGHT_ONE: BoardValue = BoardValue::new(8);
+        const EIGHT_TWO: BoardValue = BoardValue::new(8);
         const FULL_BUT_MERGEABLE: Field = [
             [TWO, FOUR, EIGHT_ONE, EIGHT_TWO], // can be merged left or right
             [FOUR, TWO, FOUR, TWO],

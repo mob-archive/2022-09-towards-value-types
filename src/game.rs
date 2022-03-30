@@ -89,8 +89,7 @@ impl Default for Game {
 
 #[cfg(test)]
 mod tests {
-
-    use crate::board_value::BoardValue;
+    use crate::field::tests::*;
     use crate::game::ExternalFieldRepresentation;
     use crate::game::Game;
 
@@ -148,10 +147,7 @@ mod tests {
 
         assert!(count_filled_fields(game.get_field()) > 1);
     }
-    const X: BoardValue = BoardValue::new(0);
-    const TWO: BoardValue = BoardValue::new(2);
-    const FOUR: BoardValue = BoardValue::new(4);
-
+    
     #[cfg(test)]
     mod from_field {
         use crate::field::Field;

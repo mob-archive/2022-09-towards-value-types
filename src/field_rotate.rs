@@ -39,13 +39,8 @@ fn extract_column(field: Field, index: usize) -> Row {
 
 #[cfg(test)]
 mod tests {
-
-    use crate::board_value::BoardValue;
+    use crate::field::tests::*;
     use crate::field_rotate::*;
-
-    const X: BoardValue = BoardValue::new(0);
-    const TWO: BoardValue = BoardValue::new(2);
-    const EMPTY_FIELD: Field = [[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]];
 
     #[cfg(test)]
     mod tests_rotate_clockwise {

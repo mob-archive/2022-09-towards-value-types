@@ -1,5 +1,5 @@
-use crate::field::Field;
 use crate::board_value::BoardValue;
+use crate::field::Field;
 use crate::random::RandomNumber;
 
 type Coordinate = (usize, usize);
@@ -60,13 +60,9 @@ fn get_new_board_value(random_number: RandomNumber) -> BoardValue {
 
 #[cfg(test)]
 mod tests {
-
+    use crate::field::tests::*;
     use crate::field_add_random_value::*;
 
-    const X: BoardValue = BoardValue::new(0);
-    const TWO: BoardValue = BoardValue::new(2);
-    const FOUR: BoardValue = BoardValue::new(4);
-    const EMPTY_FIELD: Field = [[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]];
     const NON_EMPTY_FIELD: Field = [[TWO, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]];
     const ONLY_ONE_EMPTY_CELL_FIELD: Field = [
         [TWO, TWO, TWO, TWO],

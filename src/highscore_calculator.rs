@@ -72,12 +72,7 @@ fn get_vector_without_zeros_sorted_descending(row: Row) -> Vec<BoardValue> {
 #[cfg(test)]
 mod tests {
     use crate::highscore_calculator::*;
-
-    const X: BoardValue = BoardValue::new(0);
-    const TWO: BoardValue = BoardValue::new(2);
-    const FOUR: BoardValue = BoardValue::new(4);
-    const EIGHT: BoardValue = BoardValue::new(8);
-    const EMPTY_FIELD: Field = [[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]];
+    use crate::field::tests::*;
 
     #[cfg(test)]
     mod tests_calculate_added_points_down {

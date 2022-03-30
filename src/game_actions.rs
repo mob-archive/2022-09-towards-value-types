@@ -85,13 +85,9 @@ pub fn initialize_field(
 
 #[cfg(test)]
 mod tests {
-
-    use crate::board_value::BoardValue;
+    use crate::field::tests::*;
     use crate::game_actions::*;
 
-    const X: BoardValue = BoardValue::new(0);
-    const TWO: BoardValue = BoardValue::new(2);
-    const FOUR: BoardValue = BoardValue::new(4);
     #[cfg(test)]
     mod move_field_down {
         use crate::game_actions::tests::*;

@@ -78,15 +78,8 @@ fn shift_values(row: Row, start_index: usize) -> Row {
 
 #[cfg(test)]
 mod tests {
-    use crate::field_move_and_merge::BoardValue;
+    use crate::field::tests::*;
     use crate::field_move_and_merge::Field;
-
-    const X: BoardValue = BoardValue::new(0);
-    const TWO: BoardValue = BoardValue::new(2);
-    const FOUR: BoardValue = BoardValue::new(4);
-    const EIGHT: BoardValue = BoardValue::new(8);
-    const SIXTEEN: BoardValue = BoardValue::new(16);
-    const EMPTY_FIELD: Field = [[X, X, X, X], [X, X, X, X], [X, X, X, X], [X, X, X, X]];
     const ALL_VALUES_LEFT: Field = [
         [TWO, X, X, X],
         [FOUR, X, X, X],
