@@ -1,5 +1,6 @@
-use crate::field::Field;
 use crate::board_value::BoardValue;
+use crate::field::Field;
+use crate::field_gameover::is_game_over;
 use crate::game_actions::*;
 use crate::highscore_calculator::Highscore;
 use crate::random::random;
@@ -24,7 +25,10 @@ impl Game {
     }
 
     pub fn from_field(field: Field) -> Self {
-        Self { field, highscore: 0 }
+        Self {
+            field,
+            highscore: 0,
+        }
     }
 
     pub fn get_highscore(&self) -> ExternalHighscore {
@@ -58,6 +62,10 @@ impl Game {
         let (field, added_points) = move_field_right(self.field, random(), random());
         self.field = field;
         self.highscore += added_points;
+    }
+
+    pub fn is_game_over(&self) -> bool {
+        is_game_over(self.field)
     }
 
     pub fn move_up(&mut self) {
@@ -103,6 +111,12 @@ mod tests {
     }
 
     #[test]
+    fn it_initializes_a_non_over_game() {
+        let game = Game::new();
+        assert_eq!(game.is_game_over(), false);
+    }
+
+    #[test]
     fn it_initializes_a_default_game_with_zero_highscore() {
         let game = Game::default();
         assert_eq!(game.get_highscore(), 0);
@@ -136,6 +150,7 @@ mod tests {
     }
     const X: BoardValue = BoardValue::new(0);
     const TWO: BoardValue = BoardValue::new(2);
+    const FOUR: BoardValue = BoardValue::new(4);
 
     #[cfg(test)]
     mod from_field {
@@ -153,6 +168,36 @@ mod tests {
                 [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             );
             assert_eq!(game.get_highscore(), 0);
+        }
+    }
+
+    #[cfg(test)]
+    mod is_game_over {
+        use crate::field::Field;
+        use crate::game::tests::*;
+
+        #[test]
+        fn it_should_return_true_if_field_is_full() {
+            const FULL_FIELD: Field = [
+                [FOUR, TWO, FOUR, TWO],
+                [TWO, FOUR, TWO, FOUR],
+                [FOUR, TWO, FOUR, TWO],
+                [TWO, FOUR, TWO, FOUR],
+            ];
+            let game = Game::from_field(FULL_FIELD);
+            assert_eq!(true, game.is_game_over());
+        }
+
+        #[test]
+        fn it_should_return_false_if_field_can_be_moved() {
+            const NEARL_EMPTY_FIELD: Field = [
+                [X, X, X, X],
+                [X, X, X, X],
+                [X, X, X, X],
+                [X, TWO, X, X],
+            ];
+            let game = Game::from_field(NEARL_EMPTY_FIELD);
+            assert_eq!(false, game.is_game_over());
         }
     }
 
