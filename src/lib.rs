@@ -7,5 +7,5 @@ mod field_move_and_merge;
 mod field_rotate;
 mod field_gameover;
 mod game_actions;
-mod highscore_calculator;
+mod score_calculator;
 mod random;

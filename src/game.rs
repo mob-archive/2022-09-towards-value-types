@@ -1,17 +1,17 @@
+use crate::score_calculator::Score;
 use crate::board_value::BoardValue;
 use crate::field::Field;
 use crate::field_gameover::is_game_over;
 use crate::game_actions::*;
-use crate::highscore_calculator::Highscore;
 use crate::random::random;
 
 pub struct Game {
     field: Field,
-    highscore: Highscore,
+    score: Score,
 }
 
 pub type ExternalFieldRepresentation = Vec<u32>;
-pub type ExternalHighscore = u64;
+pub type ExternalScore = u64;
 
 impl Game {
     pub fn new() -> Self {
@@ -20,19 +20,19 @@ impl Game {
         let initialized_field = initialize_field(EMPTY_FIELD, random(), random());
         Self {
             field: initialized_field,
-            highscore: 0,
+            score: 0,
         }
     }
 
     pub fn from_field(field: Field) -> Self {
         Self {
             field,
-            highscore: 0,
+            score: 0,
         }
     }
 
-    pub fn get_highscore(&self) -> ExternalHighscore {
-        self.highscore
+    pub fn get_score(&self) -> ExternalScore {
+        self.score
     }
 
     pub fn get_field(&self) -> ExternalFieldRepresentation {
@@ -55,13 +55,13 @@ impl Game {
     pub fn move_down(&mut self) {
         let (field, added_points) = move_field_down(self.field, random(), random());
         self.field = field;
-        self.highscore += added_points;
+        self.score += added_points;
     }
 
     pub fn move_right(&mut self) {
         let (field, added_points) = move_field_right(self.field, random(), random());
         self.field = field;
-        self.highscore += added_points;
+        self.score += added_points;
     }
 
     pub fn is_game_over(&self) -> bool {
@@ -71,13 +71,13 @@ impl Game {
     pub fn move_up(&mut self) {
         let (field, added_points) = move_field_up(self.field, random(), random());
         self.field = field;
-        self.highscore += added_points;
+        self.score += added_points;
     }
 
     pub fn move_left(&mut self) {
         let (field, added_points) = move_field_left(self.field, random(), random());
         self.field = field;
-        self.highscore += added_points;
+        self.score += added_points;
     }
 }
 
@@ -106,7 +106,7 @@ mod tests {
     #[test]
     fn it_initializes_a_new_game_with_zero_highscore() {
         let game = Game::new();
-        assert_eq!(game.get_highscore(), 0);
+        assert_eq!(game.get_score(), 0);
     }
 
     #[test]
@@ -118,7 +118,7 @@ mod tests {
     #[test]
     fn it_initializes_a_default_game_with_zero_highscore() {
         let game = Game::default();
-        assert_eq!(game.get_highscore(), 0);
+        assert_eq!(game.get_score(), 0);
     }
 
     #[test]
@@ -163,7 +163,7 @@ mod tests {
                 game.get_field(),
                 [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             );
-            assert_eq!(game.get_highscore(), 0);
+            assert_eq!(game.get_score(), 0);
         }
     }
 
@@ -215,7 +215,7 @@ mod tests {
             let field = game.get_field();
             let sum_of_values_in_last_row = field[12] + field[13] + field[14] + field[15];
             assert_ne!(sum_of_values_in_last_row, 0);
-            assert_eq!(game.get_highscore(), 0);
+            assert_eq!(game.get_score(), 0);
         }
 
         #[test]
@@ -223,7 +223,7 @@ mod tests {
             let mut game =
                 Game::from_field([[X, X, X, X], [X, X, X, X], [TWO, X, X, X], [TWO, X, X, X]]);
             game.move_down();
-            assert_eq!(game.get_highscore(), 4);
+            assert_eq!(game.get_score(), 4);
         }
     }
 
@@ -239,7 +239,7 @@ mod tests {
             let field = game.get_field();
             let sum_of_values_in_last_row = field[3] + field[7] + field[11] + field[15];
             assert_ne!(sum_of_values_in_last_row, 0);
-            assert_eq!(game.get_highscore(), 0);
+            assert_eq!(game.get_score(), 0);
         }
 
         #[test]
@@ -247,7 +247,7 @@ mod tests {
             let mut game =
                 Game::from_field([[X, X, X, X], [X, X, X, X], [TWO, TWO, X, X], [X, X, X, X]]);
             game.move_right();
-            assert_eq!(game.get_highscore(), 4);
+            assert_eq!(game.get_score(), 4);
         }
     }
     #[cfg(test)]
@@ -262,7 +262,7 @@ mod tests {
             let field = game.get_field();
             let sum_of_values_in_last_row = field[0] + field[1] + field[2] + field[3];
             assert_ne!(sum_of_values_in_last_row, 0);
-            assert_eq!(game.get_highscore(), 0);
+            assert_eq!(game.get_score(), 0);
         }
 
         #[test]
@@ -270,7 +270,7 @@ mod tests {
             let mut game =
                 Game::from_field([[X, X, X, X], [X, X, X, X], [TWO, X, X, X], [TWO, X, X, X]]);
             game.move_up();
-            assert_eq!(game.get_highscore(), 4);
+            assert_eq!(game.get_score(), 4);
         }
     }
 
@@ -286,7 +286,7 @@ mod tests {
             let field = game.get_field();
             let sum_of_values_in_last_row = field[0] + field[4] + field[8] + field[12];
             assert_ne!(sum_of_values_in_last_row, 0);
-            assert_eq!(game.get_highscore(), 0);
+            assert_eq!(game.get_score(), 0);
         }
 
         #[test]
@@ -294,7 +294,7 @@ mod tests {
             let mut game =
                 Game::from_field([[X, X, X, X], [X, X, X, X], [TWO, TWO, X, X], [X, X, X, X]]);
             game.move_left();
-            assert_eq!(game.get_highscore(), 4);
+            assert_eq!(game.get_score(), 4);
         }
     }
 }

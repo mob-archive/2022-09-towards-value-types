@@ -71,12 +71,12 @@ fn get_vector_without_zeros_sorted_descending(row: Row) -> Vec<BoardValue> {
 
 #[cfg(test)]
 mod tests {
-    use crate::highscore_calculator::*;
+    use crate::score_calculator::*;
     use crate::field::tests::*;
 
     #[cfg(test)]
     mod tests_calculate_added_points_down {
-        use crate::highscore_calculator::tests::*;
+        use crate::score_calculator::tests::*;
         #[test]
         fn it_should_return_zero_if_fields_are_equal() {
             assert_eq!(calculate_added_points_down(EMPTY_FIELD, EMPTY_FIELD), 0);
@@ -106,7 +106,7 @@ mod tests {
 
     #[cfg(test)]
     mod tests_calculate_added_points_up {
-        use crate::highscore_calculator::tests::*;
+        use crate::score_calculator::tests::*;
         #[test]
         fn it_should_return_zero_if_fields_are_equal() {
             assert_eq!(calculate_added_points_up(EMPTY_FIELD, EMPTY_FIELD), 0);
@@ -137,7 +137,7 @@ mod tests {
 
     #[cfg(test)]
     mod tests_calculate_added_points_right {
-        use crate::highscore_calculator::tests::*;
+        use crate::score_calculator::tests::*;
         #[test]
         fn it_should_return_zero_if_fields_are_equal() {
             assert_eq!(calculate_added_points_right(EMPTY_FIELD, EMPTY_FIELD), 0);
@@ -167,7 +167,7 @@ mod tests {
 
     #[cfg(test)]
     mod tests_calculate_added_points_left {
-        use crate::highscore_calculator::tests::*;
+        use crate::score_calculator::tests::*;
         #[test]
         fn it_should_return_zero_if_fields_are_equal() {
             assert_eq!(calculate_added_points_left(EMPTY_FIELD, EMPTY_FIELD), 0);
@@ -197,7 +197,7 @@ mod tests {
 
     #[cfg(test)]
     mod tests_calculate_added_points_per_row_left {
-        use crate::highscore_calculator::tests::*;
+        use crate::score_calculator::tests::*;
         const EMPTY_ROW: Row = [X, X, X, X];
         const ROW_WITH_TWO_LEFT: Row = [TWO, X, X, X];
         #[test]

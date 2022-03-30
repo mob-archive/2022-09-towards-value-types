@@ -1,14 +1,14 @@
 use crate::field::Field;
 use crate::field_add_random_value::add_value;
 use crate::field_move_and_merge::*;
-use crate::highscore_calculator::*;
+use crate::score_calculator::*;
 use crate::random::RandomNumber;
 
 pub fn move_field_down(
     field: Field,
     random_number_value: RandomNumber,
     random_number_position: RandomNumber,
-) -> (Field, Highscore) {
+) -> (Field, Score) {
     move_field(
         field,
         move_and_merge_down,
@@ -22,7 +22,7 @@ pub fn move_field_right(
     field: Field,
     random_number_value: RandomNumber,
     random_number_position: RandomNumber,
-) -> (Field, Highscore) {
+) -> (Field, Score) {
     move_field(
         field,
         move_and_merge_right,
@@ -36,7 +36,7 @@ pub fn move_field_up(
     field: Field,
     random_number_value: RandomNumber,
     random_number_position: RandomNumber,
-) -> (Field, Highscore) {
+) -> (Field, Score) {
     move_field(
         field,
         move_and_merge_up,
@@ -50,7 +50,7 @@ pub fn move_field_left(
     field: Field,
     random_number_value: RandomNumber,
     random_number_position: RandomNumber,
-) -> (Field, Highscore) {
+) -> (Field, Score) {
     move_field(
         field,
         move_and_merge_left,
@@ -63,10 +63,10 @@ pub fn move_field_left(
 fn move_field(
     field: Field,
     move_and_merge_operation: fn(Field) -> Field,
-    highscore_calculate_function: fn(Field, Field) -> Highscore,
+    highscore_calculate_function: fn(Field, Field) -> Score,
     random_number_value: RandomNumber,
     random_number_position: RandomNumber,
-) -> (Field, Highscore) {
+) -> (Field, Score) {
     let mut moved = move_and_merge_operation(field);
     let added_points = highscore_calculate_function(field, moved);
     if field != moved {
